@@ -1,0 +1,26 @@
+.carouselCard {
+  background-size: cover;
+  width: 285px;
+  /* width: 200px;
+  height: 120px; */
+}
+
+:host {
+  --dct-card-title-padding: 0rem;
+  --dct-card-title-padding-left: 0rem;
+
+  --dct-card-header-padding-left: 0rem;
+  --dct-card-header-padding-right: 0rem;
+  --dct-card-header-padding-top: 0rem;
+  --dct-card-header-padding-bottom: 0rem;
+}
+
+:root {
+  --dct-card-title-padding: 0rem;
+  --dct-card-title-padding-left: 0rem;
+
+  --dct-card-header-padding-left: 0rem;
+  --dct-card-header-padding-right: 0rem;
+  --dct-card-header-padding-top: 0rem;
+  --dct-card-header-padding-bottom: 0rem;
+}

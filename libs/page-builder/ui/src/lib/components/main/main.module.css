@@ -1,0 +1,57 @@
+@import 'material-symbols';
+
+.main-carousel-card {
+  background-color: green;
+  .card-small {
+    background-color: yellow;
+    padding: 0;
+    height: 100%;
+    display: block;
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+}
+
+.main-carousel-card-title.card-small {
+    display: none;
+}
+
+/* .card-small {
+  background-color: yellow;
+}
+
+/* .card-content .card-small {
+  background-color: yellow;
+} */
+
+/* .card-container {
+  background-color: pink;
+
+}
+
+.carouselCard {
+  .card-small {
+    background-color: yellow;
+  }
+}
+
+.carouselCard [class^=card-small] {
+  background-color: yellow;
+}
+
+.carouselCard > dct-card-content {
+  background-color: yellow;
+}
+
+.carouselCard .card-small {
+   
+}
+
+.cardImage {
+  width: 162px;
+  height: auto;
+  border-radius: 32px;
+} */

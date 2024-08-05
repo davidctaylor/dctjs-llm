@@ -1,0 +1,9 @@
+{
+  "name": "page-builder-e2e",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/page-builder-e2e/src",
+  "tags": [],
+  "implicitDependencies": ["page-builder"],
+  "// targets": "to see all targets run: nx show project page-builder-e2e --web",
+  "targets": {}
+}
