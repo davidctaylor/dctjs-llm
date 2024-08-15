@@ -15,8 +15,11 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@dctjs/page-builder-ui": ["libs/page-builder/ui/src/index.ts"]
+      "@/page-builder": ["apps/page-builder/src/app/client.ts"],
+      "@/page-buider/feature-main": ["libs/page-builder/feature-main/src/index.ts"],
+      "@/shared-data": ["libs/shared/data/src/index.ts"],
+      "@/shared-ui": ["libs/shared/ui/src/index.ts"]
     }
   },
-  "exclude": ["node_modules", "tmp"]
+  "exclude": ["node_modules", "tmp", "x"]
 }

@@ -1,0 +1,9 @@
+{
+  "name": "page-builder-feature-main",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/page-builder/feature-main/src",
+  "projectType": "library",
+  "tags": [],
+  "// targets": "to see all targets run: nx show project page-builder-feature-main --web",
+  "targets": {}
+}
