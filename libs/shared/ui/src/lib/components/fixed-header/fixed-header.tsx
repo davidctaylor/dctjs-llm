@@ -12,8 +12,8 @@ export const FixedHeader: React.FC<FixedHeaderProps> = ({ sideBarEvent, title })
   return (
     <header className="flex gap-x-4 items-center px-6 pt-6 w-full">
       <nav>
-        <ul className="flex">
-          <li>
+        <ul className="flex items-center">
+          <li className="flex-1 h-[40px]">
             <DctButton
               className="self-end overflow-hidden [&>*:hover]:outline-fantarka-blue [&>*:hover]:outline [&>*]:rounded-full [&>*]:outline-offset-4 [&>*]:outline-1"
               ripple={false}
@@ -24,7 +24,7 @@ export const FixedHeader: React.FC<FixedHeaderProps> = ({ sideBarEvent, title })
               <MdOutlineViewSidebar size={22} />
             </DctButton>
           </li>
-          <li>
+          <li className="flex-1 h-[40px]">
             <DctButton
               className="self-end overflow-hidden [&>*:hover]:outline-fantarka-blue [&>*:hover]:outline [&>*]:rounded-full [&>*]:outline-offset-4 [&>*]:outline-1"
               ripple={false}

@@ -1,0 +1,9 @@
+{
+  "name": "page-viewer-feature-main",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/page-viewer/feature-main/src",
+  "projectType": "library",
+  "tags": [],
+  "// targets": "to see all targets run: nx show project page-viewer-feature-main --web",
+  "targets": {}
+}

@@ -10,7 +10,7 @@ import {
   // PageBuilderPromptSchema,
   ASSISTANT_CONTENT,
   SYSTEM_CONTENT,
-} from './page-builder-schema';
+} from './page-builder-prompts';
 
 export const runtime = 'nodejs';
 
@@ -33,11 +33,5 @@ export async function POST(request: NextRequest) {
     },
   });
 
-  console.log('XXX ins', response._meta, response.page, response.prompts);
-
-  const x = JSON.stringify(response);
-  console.log('XXX x', x);
-
   return NextResponse.json(response);
-  // return new Response(x);
 }

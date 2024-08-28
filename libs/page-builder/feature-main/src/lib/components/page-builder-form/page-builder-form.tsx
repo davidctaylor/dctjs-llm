@@ -1,25 +1,30 @@
 'use client';
 
-import { SyntheticEvent, useEffect, useRef, useState } from 'react';
+import { SyntheticEvent, useContext, useEffect, useRef, useState } from 'react';
 import { MdArrowCircleUp } from 'react-icons/md';
 import { DctButton } from '@dctjs/react';
 
 import { usePageBuilderFetch, PageBuilderPromptType } from '@/shared-data';
 
+import { MainActions, MainContext } from '../../main.provider';
 import { Message } from './message-utils';
 import { PageBuilderMessage } from './interfaces';
+import { usePostMessage } from '@/shared-ui';
+
 const COLOR_ENABLED = 'rgb(31 41 55)';
 const COLOR_DISABLED = 'rgb(209 213 219)';
 
 export interface PageBuilderFormProps {}
 
 export const PageBuilderForm = (props: PageBuilderFormProps) => {
+  const mainContext = useContext(MainContext);
   const [pageData, requestState, setUserPrompt] = usePageBuilderFetch();
   const [userInput, setUserInput] = useState<string>('');
   const textRef = useRef<HTMLTextAreaElement>(null);
   const [messages, setMessages] = useState<PageBuilderMessage[]>([]);
   const [inputDisabled, setInputDisabled] = useState(false);
   const [threadId, setThreadId] = useState('');
+  // const { sendMessage } = usePostMessage('*', undefined, iframeRef);
 
   // automatically scroll to bottom of chat
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
@@ -32,14 +37,16 @@ export const PageBuilderForm = (props: PageBuilderFormProps) => {
   }, [messages]);
 
   useEffect(() => {
-    if (!pageData?.prompts) {
-      return;
+    if (pageData?.prompts) {
+      const temp: PageBuilderMessage[] = pageData.prompts.questions.map(
+        (msg) => ({ role: 'assistant', text: msg })
+      );
+      setMessages((prevMessages) => [...prevMessages, ...temp]);
     }
-    const temp: PageBuilderMessage[] = pageData.prompts.questions.map(
-      (msg) => ({ role: 'assistant', text: msg })
-    );
-    setMessages((prevMessages) => [...prevMessages, ...temp]);
-  }, [pageData?.prompts]);
+
+    mainContext?.dispatch({ type: MainActions.PAGE_CONTENT, payload: pageData?.page });
+    // sendMessage('page-builder', pageData?.page);
+  }, [pageData]);
 
   const handleClick = (event: Event) => {
     console.log('XXX SUB', userInput.trim());
@@ -48,7 +55,8 @@ export const PageBuilderForm = (props: PageBuilderFormProps) => {
     // }
 
     const x = 'create a web page with the title "hello world"';
-    setUserPrompt(x);
+    // setUserPrompt(x);
+    mainContext?.dispatch({ type: MainActions.USER_PROMPT, payload: x});
     // sendMessage(userInput);
     setMessages((prevMessages) => [
       ...prevMessages,

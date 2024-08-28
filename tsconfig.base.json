@@ -15,8 +15,13 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@/page-buider/feature-main": [
+        "libs/page-builder/feature-main/src/index.ts"
+      ],
+      "@/page-viewer/feature-main": [
+        "libs/page-viewer/feature-main/src/index.ts"
+      ],
       "@/page-builder": ["apps/page-builder/src/app/client.ts"],
-      "@/page-buider/feature-main": ["libs/page-builder/feature-main/src/index.ts"],
       "@/shared-data": ["libs/shared/data/src/index.ts"],
       "@/shared-ui": ["libs/shared/ui/src/index.ts"]
     }
