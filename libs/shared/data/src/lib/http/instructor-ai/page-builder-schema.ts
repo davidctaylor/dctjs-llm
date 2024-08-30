@@ -2,14 +2,16 @@ import { z } from 'zod';
 
 export enum PageBuilderComponentType {
   PAGE_CONTAINER = 'page_container',
-  PAGE_SECTIONS = 'page_sections',
+  // PAGE_SECTIONS = 'page_sections',
   PAGE_SECTION = 'page_section',
   ACCORDIAN = 'accordian',
   BUTTON = 'button',
   CARD = 'card',
   CAROUSEL = 'carousel',
+  CONTENT = 'content',
 }
 
+const PageBuilderComponentSectionEnum = z.enum(['ACCORDIAN', 'BUTTON', 'CARD', 'CAROUSEL']);
 const PageBuilderComponentEnum = z.nativeEnum(PageBuilderComponentType);
 
 const BaseCompoentSchema = z.object({
@@ -24,7 +26,7 @@ const AccordianCompoentSchema = BaseCompoentSchema.extend({
       content: z.string(),
     })
   ),
-});
+}).describe('Accordian of Expansion Panel component');
 
 enum ButtonComponentColorType {
   'primary',
@@ -43,7 +45,7 @@ const ButtonComponentSchema = BaseCompoentSchema.extend({
   buttonColor: z.nativeEnum(ButtonComponentColorType).optional(),
   buttonStyle: z.nativeEnum(ButtonComponentStyleType).optional(),
   disabled: z.boolean().optional(),
-});
+}).describe('Button component');
 
 const CardComponentSchema = BaseCompoentSchema.extend({
   content: z.string().optional(),
@@ -51,7 +53,7 @@ const CardComponentSchema = BaseCompoentSchema.extend({
   imageRef: z.string().optional(),
   title: z.string().optional(),
   subTitle: z.string().optional(),
-});
+}).describe('Card component');
 
 const CarouselComponentSchema = BaseCompoentSchema.extend({
   cards: z.array(CardComponentSchema),
@@ -62,32 +64,36 @@ const PageBuilderSchema = z
   .object({
     page: z
       .object({
-        content: z.string().optional(),
-        componentType: z.nativeEnum(PageBuilderComponentType),
+        pageContent: z.object({
+          content: z.string().optional(),
+          componentType: PageBuilderComponentEnum,
+          id: z.string(),
+        }).describe('Main content for a page in string, HTML or Markdown formats')
+        .optional(),
+        componentType: PageBuilderComponentEnum,
         id: z.string(),
         name: z.string().optional(),
-        // pageSections: z.array(PageBuilderSectionSchema),
         sections: z
         .array(
           z.object({
             components: z
               .array(z.union([AccordianCompoentSchema, CardComponentSchema, CarouselComponentSchema]))
               .optional(),
-            componentType: z.nativeEnum(PageBuilderComponentType),
+            componentType: PageBuilderComponentSectionEnum,
             heading: z.string(),
             id: z.string(),
           })
         )
-        .optional()
-        .describe('Page Section Object'),
+        .describe('An array or section of specific component types')
+        .optional(),
         title: z
           .object({
             title: z.string(),
             subTitle: z.string(),
             id: z.string(),
           })
-          .optional()
-          .describe('The page title property'),
+          .describe('The page title property')
+          .optional(),
         url: z.string(),
       })
       .describe('Page object'),
@@ -107,6 +113,14 @@ export const PageBuilderPromptSchema = z.object({
   prompts: AddtionalPromptSchema,
   pageContent: PageBuilderSchema,
 });
+
+const Maybe = (schema: typeof PageBuilderPromptSchema) => z.object({
+  result: schema.optional(),
+  error: z.boolean(),
+  message: z.string().optional(),
+});
+
+const MaybeUser = Maybe(PageBuilderPromptSchema);
 
 export type PageBuilderType = z.infer<typeof PageBuilderSchema>;
 export type PageBuilderPromptType = z.infer<typeof PageBuilderPromptSchema>;

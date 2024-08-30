@@ -1,7 +1,4 @@
-import { PageBuilderComponentType } from '@/shared-data';
-
 import { loadComponent } from '../../utils/load-components/load-components';
-
 export interface SectionContainerProps {
   id: string;
   components: any[];

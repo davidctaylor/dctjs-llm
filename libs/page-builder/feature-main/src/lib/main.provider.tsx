@@ -7,13 +7,12 @@ import {
   useReducer,
 } from 'react';
 
-import { PageBuilderPromptType, usePageBuilderFetch } from '@/shared-data';
+import { PageBuilderPromptType, usePageBuilderFetch, ApiState } from '@/shared-data';
 import { usePostMessage } from '@/shared-ui';
-
-export type TitlesRefreshType = 'active' | 'disabled' | 'pending';
 
 export enum MainActions {
   PAGE_CONTENT,
+  PAGE_STATUS,
   USER_PROMPT,
   SIDEBAR_LEFT,
   SIDEBAR_RIGHT,
@@ -26,22 +25,30 @@ interface MainAction {
 
 interface MainState {
   pageContent: PageBuilderPromptType | undefined;
+  pageStatus: ApiState,
   sidebarState: { left: boolean; right: boolean };
   userPrompt: string | undefined;
 }
 
 const initialState: MainState = {
   pageContent: undefined,
+  pageStatus: ApiState.IDLE,
   sidebarState: { left: true, right: false },
   userPrompt: undefined,
 };
 
-const mainReducer = (state: MainState, action: MainAction) => {
+const useMainReducer = (state: MainState, action: MainAction) => {
   switch (action.type) {
     case MainActions.PAGE_CONTENT:
       return {
         ...state,
         pageContent: { ...(action.payload as PageBuilderPromptType) },
+      };
+
+    case MainActions.PAGE_STATUS:
+      return {
+        ...state,
+        pageStatus: action.payload as ApiState,
       };
 
     case MainActions.USER_PROMPT:
@@ -74,8 +81,8 @@ const mainReducer = (state: MainState, action: MainAction) => {
   }
 };
 
-export const initializeMainContext = () => {
-  const [state, dispatch] = useReducer(mainReducer, initialState);
+export const InitializeMainContext = () => {
+  const [state, dispatch] = useReducer(useMainReducer, initialState);
 
   const contextValue = useMemo(() => ({ state, dispatch }), [state, dispatch]);
 
@@ -107,7 +114,7 @@ export const MainProvider = ({
       return;
     }
     setUserPrompt(ctx.state.userPrompt);
-  }, [ctx.state.userPrompt]);
+  }, [ctx.state.userPrompt, setUserPrompt]);
 
   useEffect(() => {
     if (pageData?.pageContent) {
@@ -118,7 +125,14 @@ export const MainProvider = ({
       type: MainActions.PAGE_CONTENT,
       payload: pageData,
     });
-  }, [pageData]);
+  }, [ctx, pageData, sendMessage]);
+
+  useEffect(() => {
+    ctx.dispatch({
+      type: MainActions.PAGE_STATUS,
+      payload: requestState,
+    });
+  }, [ctx, requestState]);
 
   return (
     <MainContext.Provider value={ctx}>

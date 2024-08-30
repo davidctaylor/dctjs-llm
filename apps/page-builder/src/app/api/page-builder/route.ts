@@ -1,13 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 import { PageBuilderPromptSchema } from '@/shared-data';
-
 import {
   instructorClient,
   INSTRUCTOR_MODEL,
 } from 'apps/page-builder/src/app/instructor-client';
 import {
-  // PageBuilderPromptSchema,
   ASSISTANT_CONTENT,
   SYSTEM_CONTENT,
 } from './page-builder-prompts';

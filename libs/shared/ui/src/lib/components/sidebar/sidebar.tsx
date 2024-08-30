@@ -20,15 +20,17 @@ export const Sidebar: React.FC<SidebarProps> = ({
   title,
   openEvent,
 }) => {
+
+
   return (
     <div
       className={`border-r flex flex-col flex-1 overflow-hidden relative transition-all duration-200 sidebar  ${
         isOpen ? 'w-full max-w-[400px]' : 'w-0 max-w-[0px]'
-      }`}
+      } ${position === 'right' ? 'border-l' : 'border-r'}`}
     >
       <div className="flex items-center px-6 pt-6">
         {position === 'right' && <DctButton
-          className="overflow-hidden [&>*:hover]:outline-fantarka-blue [&>*:hover]:outline [&>*]:rounded-full [&>*]:outline-offset-4 [&>*]:outline-1"
+          className="overflow-hidden text-slate-700 [&>*:hover]:outline-fantarka-blue [&>*:hover]:outline [&>*]:rounded-full [&>*]:outline-offset-4 [&>*]:outline-1"
           ripple={false}
           button-style="text"
           iconButton={true}
@@ -38,7 +40,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </DctButton>}
         <div className="flex-1">{title}</div>
         {position === 'left' && <DctButton
-          className="self-end overflow-hidden [&>*:hover]:outline-fantarka-blue [&>*:hover]:outline [&>*]:rounded-full [&>*]:outline-offset-4 [&>*]:outline-1"
+          className="self-end text-slate-700 overflow-hidden [&>*:hover]:outline-fantarka-blue [&>*:hover]:outline [&>*]:rounded-full [&>*]:outline-offset-4 [&>*]:outline-1"
           ripple={false}
           button-style="text"
           iconButton={true}

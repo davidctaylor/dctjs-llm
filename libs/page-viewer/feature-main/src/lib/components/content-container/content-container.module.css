@@ -1,0 +1,5 @@
+.contentContainer {
+  h3 {
+    @apply font-medium pt-6 pb-2; 
+  }
+}

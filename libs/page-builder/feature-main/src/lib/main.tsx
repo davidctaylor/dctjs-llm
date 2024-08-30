@@ -1,38 +1,28 @@
 'use client';
 
-import { useContext, useEffect, useRef, useState } from 'react';
-import { InstructorClient } from '@instructor-ai/instructor';
+import { useRef } from 'react';
 
-import {
-  DctButton,
-  DctCard,
-  DctCardContent,
-  DctCardTitle,
-  DctCarousel,
-} from '@dctjs/react';
-import { FixedHeader, Sidebar, usePostMessage } from '@/shared-ui';
-
+import { Sidebar } from '@/shared-ui';
+import { Header } from './components/header/header';
 import { PageBuilderForm } from './components/page-builder-form/page-builder-form';
-import { PageBuilderComponentType, PageBuilderType } from '@/shared-data';
 
-import { MainActions, MainProvider, initializeMainContext } from './main.provider';
+import { MainActions, MainProvider, InitializeMainContext } from './main.provider';
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface MainProps {}
 
-export const Main = (props: MainProps) => {
-
+export const Main = () => {
   const iframeRef = useRef<HTMLIFrameElement>(null);
-  const mainContext = initializeMainContext();
+  const mainContext = InitializeMainContext();
 
   return (
     <MainProvider ctx={mainContext} iframeRef={iframeRef}>
-      <div className="flex flex-col flex-1 main-container">
-        <FixedHeader
-          title="Page builder"
+      <div className="flex flex-col flex-1 main-container overflow-scroll">
+        <Header
           sideBarEvent={(e) => {
             mainContext.dispatch({ type: e === 'edit' ? MainActions.SIDEBAR_RIGHT : MainActions.SIDEBAR_LEFT, payload: null })
           }}
-        ></FixedHeader>
+        ></Header>
         <main className="flex flex-1 overflow-hidden">
           <Sidebar
             title="Create Page"
@@ -44,8 +34,9 @@ export const Main = (props: MainProps) => {
           </Sidebar>
           <div className="flex flex-col flex-1">
             <iframe
+              title="Page builder active page viewe"
               src="page-viewer"
-              className="flex-1"
+              className="flex-1 overflow-hidden"
               ref={iframeRef}
             ></iframe>
           </div>

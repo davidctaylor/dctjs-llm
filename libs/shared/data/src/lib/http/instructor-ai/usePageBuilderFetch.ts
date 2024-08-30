@@ -19,108 +19,72 @@ export const usePageBuilderFetch = () => {
         return;
       }
 
-      setPageData({
-        prompts: {
-          questions: [
-            'Do you want to add a subTitle to the page?',
-            'Would you like to include sections or components such as a carousel or button?',
-          ],
+      setApiState(ApiState.ACTIVE);
+
+      setTimeout(() => {
+        setApiState(ApiState.IDLE);
+      }, 1000);
+
+      const x = {
+        "pageContent": {
+            "page": {
+                "pageContent": {
+                    "content": "### Mesa Verde National Park\n\nMesa Verde National Park, located in southwestern Colorado, is a UNESCO World Heritage site famous for its well-preserved Ancestral Puebloan cliff dwellings, notably the Cliff Palace. Visitors can explore a range of impressive archaeological sites that give a glimpse into the lives of the Ancestral Puebloans who lived there from approximately A.D. 600 to 1300. The park offers guided tours, hiking trails, and educational exhibits at the visitor center, making it a fantastic destination for history buffs and outdoor enthusiasts alike.\n\n### Great Sand Dunes National Park and Preserve\n\nGreat Sand Dunes National Park and Preserve, located in southern Colorado, is home to the tallest sand dunes in North America, rising up to 750 feet. This unique landscape provides a stunning contrast with the surrounding mountains and grasslands. The park offers a wide range of activities including sandboarding, hiking, and stargazing. Visitors can also explore Medano Creek, which flows at the base of the dunes seasonally, creating a beach-like environment perfect for family fun. With its striking natural beauty and diverse recreational opportunities, Great Sand Dunes is a must-visit Colorado destination.\n\n",
+                    "componentType": "content",
+                    "id": "content-1"
+                },
+                "componentType": "page_container",
+                "id": "page-1",
+                "title": {
+                    "title": "Colorado State Parks",
+                    "subTitle": "Exploring the Beauty of Mesa Verde and Great Sand Dunes",
+                    "id": "title-1"
+                },
+                "url": "colorado-state-parks"
+            }
         },
-        pageContent: {
-          page: {
-            componentType: 'page_container' as PageBuilderComponentType,
-            id: 'page-1',
-            title: {
-              title: 'Hello World',
-              subTitle: '',
-              id: 'title-1',
-            },
-            url: 'hello-world',
-            // pageSections: [
-            //   {
-            //     componentType: 'page_sections' as PageBuilderComponentType,
-            //     id: 'page-sections',
-            sections: [
-              {
-                id: 'section-1',
-                heading: 'Section Heading',
-                componentType: 'page_section' as PageBuilderComponentType,
-                components: [
-                  {
-                    componentType: PageBuilderComponentType.CAROUSEL,
-                    id: 'carousel-1',
-                    cards: [
-                      {
-                        componentType: PageBuilderComponentType.CARD,
+        "_meta": {
+            "usage": {
+                "prompt_tokens": 644,
+                "completion_tokens": 319,
+                "total_tokens": 963
+            }
+        }
+    }
 
-                        id: 'card-1',
-                        // content: '<div>hello world</div>',
-                        // subTitle: 'Card title',
-                        // title: 'Card title',
-                        // content: '<img src="/images/great-sand-dunes.jpg">',
-                        imageRef: '/images/great-sand-dunes.jpg',
-                      },
-                      {
-                        componentType: PageBuilderComponentType.CARD,
+    // setPageData(x);
 
-                        id: 'card-2',
-                        // content: '<div>hello world</div>',
-                        // subTitle: 'Card title2',
-                        // title: 'Card title2',
-                        // content: '<img src="/images/garden.jpg">',
-                        imageRef: '/images/garden.jpg',
-                      },
-                      {
-                        componentType: PageBuilderComponentType.CARD,
 
-                        id: 'card-3',
-                        // content: '<div>hello world</div>',
-                        // subTitle: 'Card title2',
-                        // title: 'Card title2',
-                        // content: '<img src="/images/rockies.jpg">',
-                        imageRef: '/images/rockies.jpg',
-                      },
-                      {
-                        componentType: PageBuilderComponentType.CARD,
-
-                        id: 'card-4',
-                        // content: '<div>hello world</div>',
-                        // subTitle: 'Card title2',
-                        // title: 'Card title2',
-                        // content: '<img src="/images/mesa-verde.jpg">',
-                        imageRef: '/images/mesa-verde.jpg',
-                      },
-                    ],
-                  },
-                ],
-              },
-            ],
+      // console.log('XXX sub', userPrompt);
+      setApiState(ApiState.ACTIVE);
+      try {
+        const response = await fetch(`/api/page-builderXXX`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
           },
-        },
-      });
+          body: JSON.stringify({
+            content: userPrompt,
+          }),
+        });
+        console.log('XXX GOT1', response);
+        if (response.status !== 200) {
+          setApiState(ApiState.ERROR);
+          return;
+        }
 
-      // setApiState(ApiState.ACTIVE);
-      //   try {
-      //     const response = await fetch(`/api/page-builder`, {
-      //       method: 'POST',
-      //       headers: {
-      //         'Content-Type': 'application/json',
-      //       },
-      //       body: JSON.stringify({
-      //         content: userPrompt,
-      //       }),
-      //     });
-      //     console.log('XXX GOT1', response);
-      //     setPageData(await response.json());
+        const x = await response.json();
+        console.log('XXX GOT', x);
 
-      //     const x = await response.json();
+        setPageData(x);
 
-      //     console.log('XXX GOT', x);
+        // setPageData(await response.json());
 
-      //     setApiState(ApiState.IDLE);
-      //   } catch (error) {
-      //     setApiState(ApiState.ERROR);
-      //   }
+        setApiState(ApiState.IDLE);
+      } catch (error) {
+        console.log('XXX error...', error);
+        setApiState(ApiState.ERROR);
+      }
     })();
   }, [userPrompt]);
 

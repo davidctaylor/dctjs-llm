@@ -2,7 +2,9 @@
   "name": "@dctjs/page-builder",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "lint": "nx run-many --targets=lint"
+  },
   "private": true,
   "dependencies": {
     "@dctjs/react": "^1.0.8",

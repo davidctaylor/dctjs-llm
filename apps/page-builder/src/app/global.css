@@ -44,6 +44,10 @@
     }
   }
   
+  dct-button.icon {
+    color: red;
+    @apply text-red-500;
+  }
   dct-button.outlined {
     @apply border;
   }
