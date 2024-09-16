@@ -1,8 +1,3 @@
-'use client';
-
-import { useEffect, useState } from 'react';
-
-import { FetchState, FetchResponse } from '../interfaces';
 import {
   PageBuilderComponentEnum,
   PageBuilderRequestType,
@@ -110,7 +105,8 @@ const fetchIntentClassifications = async (
     throw { message: response.statusText, status: response.status };
   }
 
-  const responseJson: PageBuilderIntentClassificationType = await response.json();
+  const responseJson: PageBuilderIntentClassificationType =
+    await response.json();
   console.log('XXX GOT INTENT', response.status, responseJson);
 
   return responseJson;
@@ -133,12 +129,18 @@ export const fetchPageBuilder = async (
     const intentClassifications: PageBuilderIntentClassificationType =
       await fetchIntentClassifications(userContent);
     console.log('XXX intentClassifications', intentClassifications);
+    let invalid = false;
     intentClassifications.intents.forEach((entry) => {
       console.log('XXX itent', entry);
-      if (entry.intent === IntentClassificationType.INVALID) {
-        pageData.prompts.push(entry.text)
+      if (entry.intent === IntentClassificationEnum.INVALID) {
+        pageData.prompts.push(entry.text);
+        invalid = true;
       }
     });
+
+    if (invalid) {
+      return pageData;
+    }
 
     const response = await fetch(`/api/page-builder`, {
       method: 'POST',
