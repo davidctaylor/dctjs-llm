@@ -1,4 +1,4 @@
-import { marked } from 'marked';
+import { convertMarkdown } from '@/shared-ui';
 
 import styles from './content-container.module.css';
 
@@ -11,7 +11,7 @@ export const ContentContainer: React.FC<ContentProps> = ({ content, id }) => {
   return (
     <div className={styles.contentContainer}
       data-component-id={id}
-      dangerouslySetInnerHTML={{ __html: marked.parse(content) }}
+      dangerouslySetInnerHTML={{ __html: convertMarkdown(content) }}
     ></div>
   );
 };

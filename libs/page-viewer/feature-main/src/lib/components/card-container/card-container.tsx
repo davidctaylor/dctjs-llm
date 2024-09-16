@@ -1,5 +1,6 @@
 import { DctCard, DctCardTitle, DctCardContent } from '@dctjs/react';
-import { marked } from 'marked';
+
+import { convertMarkdown } from '@/shared-ui';
 
 export interface CardProps {
   content?: string;
@@ -34,7 +35,7 @@ export const CardContainer: React.FC<CardProps> = ({
       {content && (
         <DctCardContent>
           <div
-            dangerouslySetInnerHTML={{ __html: marked.parse(content) }}
+            dangerouslySetInnerHTML={{ __html: convertMarkdown.parse(content) }}
           ></div>
         </DctCardContent>
       )}
