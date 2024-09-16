@@ -1,5 +1,4 @@
-
-export type PageBuilderMessageType = 'user' | 'assistant';
+export type PageBuilderMessageType = 'assistant' | 'error' | 'user' ;
 export interface PageBuilderMessage {
   role: PageBuilderMessageType;
   text: string;

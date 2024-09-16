@@ -1,12 +1,12 @@
-import { PageBuilderComponentType } from '@/shared-data';
+import { PageBuilderComponentEnum } from '@/shared-data';
 import { loadComponent } from '../../utils/load-components/load-components';
 
 export interface PageContainerProps {
-  componentType: PageBuilderComponentType;
+  componentType: PageBuilderComponentEnum;
   id: string;
   pageContent?: {
     content: string;
-    componentType: PageBuilderComponentType;
+    componentType: PageBuilderComponentEnum;
     id: string;
   }
   title?: {

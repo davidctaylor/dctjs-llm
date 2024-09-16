@@ -13,7 +13,10 @@ const nextConfig = {
     svgr: false,
   },
   compiler: {
-    styledComponents: true,
+    styledComponents: {
+      displayName: false,
+      ssr: false
+    },
   }
 };
 

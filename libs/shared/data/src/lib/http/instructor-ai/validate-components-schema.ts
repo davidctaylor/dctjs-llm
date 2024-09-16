@@ -102,24 +102,21 @@ export const PageBuilderSchema = z
     // title: z.string().describe('Title of page or article')})
     componentType: PageBuilderComponentEnumInternal,
     id: z.string().describe('Identifier for the page object'),
-    title: z.union([
-      z.undefined(),
-      z
-        .object({
-          componentType: PageBuilderComponentEnumInternal,
-          title: z
-            .union([z.string(), z.undefined()])
-            .describe('Title of page or article'),
-          subTitle: z
-            .union([z.string(), z.undefined()])
-            .describe('The SubTitle of page or article')
-            .optional(),
-          id: z.string(),
-        })
-        .describe(
-          'Title and sub-title for the page. Compoenent type "PAGE_TITLE"'
-        ),
-    ]),
+    title: z
+      .object({
+        componentType: PageBuilderComponentEnumInternal,
+        title: z
+          .union([z.string(), z.undefined()])
+          .describe('Title of page or article'),
+        subTitle: z
+          .union([z.string(), z.undefined()])
+          .describe('The SubTitle of page or article')
+          .optional(),
+        id: z.string(),
+      })
+      .describe(
+        'Title and sub-title for the page. Compoenent type "PAGE_TITLE"'
+      ),
     pageContent: z
       .object({
         content: z.union([z.string(), z.undefined()]),

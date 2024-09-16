@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "lint": "nx run-many --targets=lint"
+    "lint": "nx run-many --targets=lint",
+    "start": "nx run page-builder:dev --port=4300 --verbose"
   },
   "private": true,
   "dependencies": {
@@ -11,8 +12,8 @@
     "@dctjs/web-components": "^1.0.8",
     "@instructor-ai/instructor": "^1.5.0",
     "marked-react": "^2.0.0",
-    "next": "14.2.5",
-    "openai": "^4.55.1",
+    "next": "^14.2.7",
+    "openai": "^4.57.0",
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "react-icons": "^5.2.1",
