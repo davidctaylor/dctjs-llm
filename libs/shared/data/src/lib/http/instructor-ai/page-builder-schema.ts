@@ -1,4 +1,4 @@
-import { any, z } from 'zod';
+import { z } from 'zod';
 
 export enum PageBuilderComponentEnum {
   CONTENT = 'CONTENT',
@@ -18,7 +18,6 @@ const PageBuilderComponentEnumInternal = z.nativeEnum(PageBuilderComponentEnum);
 
 const BaseComponentSchema = z.object({
   id: z.string(),
-  // componentType: z.string().optional(),
 });
 
 const AccordianComponentSchema = BaseComponentSchema.extend({
@@ -44,11 +43,12 @@ enum ButtonComponentStyleType {
 }
 
 const ButtonComponentSchema = BaseComponentSchema.extend({
+  componentType: z.literal('BUTTON'),
   arialLabel: z.string().optional(),
   buttonColor: z.nativeEnum(ButtonComponentColorType).optional(),
   buttonStyle: z.nativeEnum(ButtonComponentStyleType).optional(),
   disabled: z.boolean().optional(),
-}).describe('Button component of type "BUTTON"');
+}).describe('BUTTON component');
 
 export const CardComponentSchema = BaseComponentSchema.extend({
   componentType: z.literal('CARD'),
@@ -88,6 +88,7 @@ export const PageBuilderSectionsSchema = z.object({
     .array(
       z.union([
         AccordianComponentSchema,
+        ButtonComponentSchema,
         CardComponentSchema,
         CarouselComponentSchema,
       ])

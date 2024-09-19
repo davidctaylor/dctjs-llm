@@ -1,7 +1,11 @@
 import { SyntheticEvent, useContext, useEffect, useRef, useState } from 'react';
-import { MdArrowCircleDown, MdArrowCircleUp } from 'react-icons/md';
+import {
+  MdArrowCircleDown,
+  MdArrowCircleUp,
+  MdArrowDropUp,
+} from 'react-icons/md';
 
-import { DctButton, DctAccordian, DctItemHeading, DctItem } from '@dctjs/react';
+import { DctButton, DctAccordion, DctItemHeading, DctItem } from '@dctjs/react';
 
 import { Circle } from '@/shared-ui';
 
@@ -18,6 +22,11 @@ import { InputConfirmation } from '../input-confirmation/input-confirmation';
 
 const DEFAULT_TEXTAREA_HEIGHT = '40px';
 
+interface PromptTypes {
+  attributes: string[];
+  classifications: string[];
+}
+
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface PageBuilderFormProps {}
 
@@ -26,10 +35,8 @@ export const PageBuilderForm = () => {
   const [userInput, setUserInput] = useState<string>('');
   const textRef = useRef<HTMLTextAreaElement>(null);
   const [messages, setMessages] = useState<PageBuilderMessage[]>([]);
-  const [confirmations, setConfirmations] = useState<
-    PageBuilderBaseComponentType[]
-  >([]);
-  const messagesEndRef = useRef<HTMLDivElement | null>(null);
+  const [promptTypes, setPromptTypes] = useState<PromptTypes>();
+  // const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
   // useEffect(() => {
   //   messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -56,40 +63,32 @@ export const PageBuilderForm = () => {
 
     if (mainContext?.state.pageContent?.prompts) {
       console.log('XXX PROMPTS:', mainContext?.state.pageContent?.prompts);
-      const comps: PageBuilderBaseComponentType[] =
-        mainContext.state.pageContent.prompts.reduce((a: any[], prompt: string | undefined) => {
+
+      const prompts: PromptTypes = mainContext.state.pageContent.prompts.reduce(
+        (a: PromptTypes, prompt: string | undefined) => {
           if (!prompt) {
             return a;
           }
 
-          const parts = prompt.split(':');
-          console.log('XXX PARYS:', parts);
-          if (parts[0] !== 'missing-attributes') {
+          const parts: string[] = prompt.split(':');
+          if (!parts[1]) {
             return a;
           }
-          const compId = parts[1];
-          mainContext.state.pageContent?.page?.sections?.forEach((section) => {
-            section.components.forEach((comp) => {
-              if (comp.id === compId) {
-                comp && a.push(comp);
-              } else if ('cards' in comp) {
-                const card = comp['cards'].find((card) => card.id === compId);
-                card && a.push(card);
-              }
-            })
-          });
+          if (parts[0] === 'missing-attributes') {
+            a.attributes.push(parts[1]);
+          } else if (parts[0] === 'intent-classification') {
+            a.classifications.push(parts[1]);
+          }
+
           return a;
-        }, []);
+        },
+        {
+          attributes: [],
+          classifications: [],
+        }
+      );
 
-      setConfirmations(comps);
-
-      const temp: PageBuilderMessage[] =
-        mainContext.state.pageContent.prompts.map((msg) => ({
-          role: 'assistant',
-          text: msg,
-        }));
-      console.log('XXX temp', temp);
-      setMessages((prevMessages) => [...prevMessages, ...temp]);
+      setPromptTypes(prompts);
     }
   }, [mainContext]);
 
@@ -126,6 +125,50 @@ export const PageBuilderForm = () => {
     textRef.current.style.minHeight = `${target.scrollHeight}px`;
   };
 
+  const classifications = () => {
+    return promptTypes?.classifications.map((cls) => {
+      return (
+        <DctAccordion className="bg-blue-50 m-2 overflow-hidden rounded-lg">
+          <DctItemHeading slot="heading" animateIcons={true}>
+            <span slot="start">
+              <MdArrowDropUp size={24} />
+            </span>
+            <p slot="heading">Classify</p>
+            <p slot="sub-heading">{cls}</p>
+          </DctItemHeading>
+          <DctItem className="pl-0">
+            <p>Unable to process request due to unknown component</p>
+          </DctItem>
+        </DctAccordion>
+      );
+    });
+  };
+  const confirmations = () => {
+    if (!promptTypes?.attributes) {
+      return [];
+    }
+    const comps = promptTypes.attributes.reduce(
+      (a: PageBuilderBaseComponentType[], compId) => {
+        mainContext?.state.pageContent?.page?.sections?.forEach((section) => {
+          section.components.forEach((comp) => {
+            if (comp.id === compId) {
+              comp && a.push(comp);
+            } else if ('cards' in comp) {
+              const card = comp['cards'].find((card) => card.id === compId);
+              card && a.push(card);
+            }
+          });
+        });
+        return a;
+      },
+      []
+    );
+
+    return comps.map((comp) => (
+      <InputConfirmation key={comp.id} component={comp}></InputConfirmation>
+    ));
+  };
+
   return (
     <div className="flex flex-col h-full gap-y-4">
       <form className="flex gap-x-4 items-center" onSubmit={handleSubmit}>
@@ -150,21 +193,18 @@ export const PageBuilderForm = () => {
             iconButton={true}
             onDctButtonClick={handleClick}
           >
-            <MdArrowCircleDown size={40} />
+            <MdArrowCircleDown size={32} />
           </DctButton>
         )}
       </form>
       <div className="overflow-y-scroll h-full max-h-[calc(100vh-265px)] border rounded-lg">
-        {confirmations &&
-          confirmations.map((comp) => {
-            return <InputConfirmation key={comp.id} component={comp}></InputConfirmation>;
-          })}
+        {classifications()}
+        {confirmations()}
 
         <div className="">
           {messages.map((msg, idx) => (
             <Message key={idx} role={msg.role} text={msg.text} />
           ))}
-          <div ref={messagesEndRef} />
         </div>
       </div>
     </div>

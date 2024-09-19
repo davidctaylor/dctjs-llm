@@ -1,3 +1,5 @@
+export const SECTION_ASSISTANT_CONTENT = `
+`
 export const SECTION_SYSTEM_CONTENT = `
 Process natural a language request to build an array of JSON objects that represent Components from the list of Valid Component types
 

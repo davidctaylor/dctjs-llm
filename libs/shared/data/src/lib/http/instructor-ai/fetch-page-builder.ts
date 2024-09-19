@@ -10,8 +10,8 @@ import {
 } from './intent-classification-schema';
 
 const resp_sestion = {
-  errors: ['MyBad'],
   prompts: [
+    `intent-classification:my-bad`,
     'missing-attributes:section-1-carousel-1-card-1',
     'missing-attributes:section-1-carousel-1-card-2',
     'missing-attributes:section-2-card-1',
@@ -58,7 +58,6 @@ const testRespose = (pageData: PageBuilderRequestType | undefined) => {
   console.log('XXX no send...');
   return Promise.resolve({
     ...pageData,
-    errors: resp_sestion.errors,
     prompts: resp_sestion.prompts,
     ...(pageData?.page && {
       page: {
@@ -116,7 +115,7 @@ export const fetchPageBuilder = async (
   userContent: string,
   pageData: PageBuilderRequestType
 ): Promise<PageBuilderRequestType> => {
-  const x = false;
+  const x = true;
   if (x) {
     return testRespose(pageData);
   }
@@ -133,7 +132,7 @@ export const fetchPageBuilder = async (
     intentClassifications.intents.forEach((entry) => {
       console.log('XXX itent', entry);
       if (entry.intent === IntentClassificationEnum.INVALID) {
-        pageData.prompts.push(entry.text);
+        pageData.prompts.push(`intent-classification:${entry.text}`);
         invalid = true;
       }
     });
@@ -164,7 +163,6 @@ export const fetchPageBuilder = async (
 
     if (responseJson && userIntent === IntentClassificationEnum.SECTION) {
       const sectionData = responseJson as PageBuilderSectionRequestType;
-      sectionData.sectionsContent;
       return {
         ...pageData,
         prompts: sectionData.prompts,

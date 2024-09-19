@@ -214,11 +214,14 @@ export const MainProvider = ({
 
     (async () => {
       try {
-        const x = await fetchPageBuilder(p, ctx.state.pageContent);
-        console.log('XXX FRO API', x);
+        const response = await fetchPageBuilder(p, ctx.state.pageContent);
         ctx.dispatch({
           type: MainActions.PAGE_STATUS,
           payload: FetchState.ACTIVE,
+        });
+        ctx.dispatch({
+          type: MainActions.PAGE_CONTENT,
+          payload: response,
         });
       } catch (error) {
         ctx.dispatch({

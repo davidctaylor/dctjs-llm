@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { zodFunction } from 'openai/helpers/zod';
 
 import {
   IntentClassificationSchema,
@@ -17,7 +16,6 @@ import {
   SECTION_ASSISTANT_CONTENT,
   SECTION_SYSTEM_CONTENT,
 } from './page-section-prompts';
-import z from 'zod';
 import {
   ChatCompletionMessageParam,
   ChatCompletionRole,
@@ -89,15 +87,6 @@ export async function POST(request: NextRequest) {
     { role: 'user', content: userContent },
   ];
 
-  // const s = async () => {
-  //   const response = await instructorClient.chat.completions.create({
-  //     messages,
-  //     model: INSTRUCTOR_MODEL,
-  //     response_model: { schema: SearchSchema, name: 'Multi Search' }, // responseModel(requestType),
-  //   });
-  //   return response;
-  // };
-
   const response = await instructorClient.chat.completions.create({
     messages,
     model: INSTRUCTOR_MODEL,
@@ -108,31 +97,3 @@ export async function POST(request: NextRequest) {
 
   return NextResponse.json(response);
 }
-
-
-  // const SearchTypeSchema = z
-  //   .enum(['VIDEO', 'EMAIL'])
-  //   .describe(
-  //     'Enumeration representing the types of searchs that can be performed'
-  //   );
-
-  // const SearchSchema = z
-  //   .object({
-  //     title: z.string().describe('Title of the request'),
-  //     query: z.string().describe('Query to search fro relevant content'),
-  //     type: SearchTypeSchema.describe('Type of search'),
-  //   })
-  //   .describe(
-  //     'Object representing a single search query which contains title, query, and the search type'
-  //   );
-
-  // type Search = z.infer<typeof SearchSchema>;
-
-  // async function executeSearch(search: any) {
-  //   return Promise.resolve([
-  //     {
-  //       url: 'ing1',
-  //       altText: 'Some alt',
-  //     },
-  //   ]);
-  // }

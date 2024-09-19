@@ -3,6 +3,8 @@
 @tailwind components;
 @tailwind utilities;
 
+
+
 @layer base {
   /* dct-card {
     border-width: 1px;
@@ -11,6 +13,9 @@
       padding-top: 1rem;
     }
   } */
+
+
+
   dct-card-title {
     /* --dct-card-title-padding-left: 0rem;
     --dct-card-title-padding-right: 0rem; */
@@ -44,10 +49,6 @@
     }
   }
   
-  dct-button.icon {
-    color: red;
-    @apply text-red-500;
-  }
   dct-button.outlined {
     @apply border;
   }
@@ -66,3 +67,6 @@
   }
 }
 
+:root {
+  --dct-accordion-border-color: white;
+}

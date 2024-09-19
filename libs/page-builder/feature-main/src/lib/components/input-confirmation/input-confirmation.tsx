@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { MdArrowDropUp } from 'react-icons/md';
-import { DctAccordian, DctItem, DctItemHeading } from '@dctjs/react';
+import { DctAccordion, DctItem, DctItemHeading } from '@dctjs/react';
 
 import {
   CardComponentSchema,
@@ -38,7 +38,7 @@ export const InputConfirmation: React.FC<InputConfirmationProps> = ({
   };
 
   return (
-    <DctAccordian
+    <DctAccordion
       disabled={false}
       className="bg-green-50 m-2 overflow-hidden rounded-lg"
     >
@@ -69,6 +69,6 @@ export const InputConfirmation: React.FC<InputConfirmationProps> = ({
             </DctItem>
           );
         })}
-    </DctAccordian>
+    </DctAccordion>
   );
 };
