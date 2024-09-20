@@ -1,7 +1,6 @@
 import { SyntheticEvent, useContext, useEffect, useRef, useState } from 'react';
 import {
   MdArrowCircleDown,
-  MdArrowCircleUp,
   MdArrowDropUp,
 } from 'react-icons/md';
 
@@ -10,14 +9,7 @@ import { DctButton, DctAccordion, DctItemHeading, DctItem } from '@dctjs/react';
 import { Circle } from '@/shared-ui';
 
 import { MainActions, MainContext } from '../../main.provider';
-import { Message } from './message-utils';
-import { PageBuilderMessage } from './interfaces';
-import {
-  FetchState,
-  PageBuilderBaseComponentType,
-  PageBuilderCarouseComponentType,
-  PageBuilderComponentSectionEnum,
-} from '@/shared-data';
+import { FetchState, PageBuilderBaseComponentType } from '@/shared-data';
 import { InputConfirmation } from '../input-confirmation/input-confirmation';
 
 const DEFAULT_TEXTAREA_HEIGHT = '40px';
@@ -28,19 +20,14 @@ interface PromptTypes {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface PageBuilderFormProps {}
+export interface UserPromptFormProps {}
 
-export const PageBuilderForm = () => {
+export const UserPromptForm = () => {
   const mainContext = useContext(MainContext);
   const [userInput, setUserInput] = useState<string>('');
   const textRef = useRef<HTMLTextAreaElement>(null);
-  const [messages, setMessages] = useState<PageBuilderMessage[]>([]);
+  const [messages, setMessages] = useState<string[]>([]);
   const [promptTypes, setPromptTypes] = useState<PromptTypes>();
-  // const messagesEndRef = useRef<HTMLDivElement | null>(null);
-
-  // useEffect(() => {
-  //   messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  // }, [messages]);
 
   useEffect(() => {
     console.log('XXX FORM STATE', mainContext?.state);
@@ -51,13 +38,7 @@ export const PageBuilderForm = () => {
       mainContext.state.pageStatus.state === FetchState.ERROR &&
       mainContext.state.pageStatus.errorStatusText
     ) {
-      const temp: PageBuilderMessage[] = [
-        {
-          role: 'error',
-          text: `Processing error: ${mainContext.state.pageStatus.errorStatusCode} ${mainContext.state.pageStatus.errorStatusText}`,
-        },
-      ];
-      setMessages((prevMessages) => [...prevMessages, ...temp]);
+      setMessages([`Processing error: ${mainContext.state.pageStatus.errorStatusCode} ${mainContext.state.pageStatus.errorStatusText}`]);
       return;
     }
 
@@ -98,10 +79,7 @@ export const PageBuilderForm = () => {
       return;
     }
 
-    setMessages((prevMessages) => [
-      ...prevMessages,
-      { role: 'user', text: userInput },
-    ]);
+    setMessages([userInput]);
     setUserInput('');
     mainContext?.dispatch({
       type: MainActions.USER_PROMPT,
@@ -128,7 +106,10 @@ export const PageBuilderForm = () => {
   const classifications = () => {
     return promptTypes?.classifications.map((cls) => {
       return (
-        <DctAccordion className="bg-blue-50 m-2 overflow-hidden rounded-lg">
+        <DctAccordion
+          key={cls}
+          className="bg-blue-50 m-2 overflow-hidden rounded-lg"
+        >
           <DctItemHeading slot="heading" animateIcons={true}>
             <span slot="start">
               <MdArrowDropUp size={24} />
@@ -186,7 +167,7 @@ export const PageBuilderForm = () => {
 
         {mainContext?.state.pageStatus.state !== FetchState.ACTIVE && (
           <DctButton
-            className="overflow-hidden text-slate-700 [&>*:hover]:outline-fantarka-blue [&>*:hover]:outline [&>*]:rounded-full [&>*]:outline-offset-4 [&>*]:outline-1"
+            className="text-slate-700 w-[32px] h-[32px]"
             ripple={false}
             button-style="text"
             buttonType="submit"
@@ -203,7 +184,9 @@ export const PageBuilderForm = () => {
 
         <div className="">
           {messages.map((msg, idx) => (
-            <Message key={idx} role={msg.role} text={msg.text} />
+            <div className="flex flex-1 justify-end p-2">
+              <div className="rounded-3xl bg-[#f4f4f4] p-2">{msg}</div>
+            </div>
           ))}
         </div>
       </div>

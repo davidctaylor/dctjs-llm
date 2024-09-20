@@ -30,7 +30,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     >
       <div className="flex items-center px-6 pt-6">
         {position === 'right' && <DctButton
-          className="overflow-hidden text-slate-700 [&>*:hover]:outline-fantarka-blue [&>*:hover]:outline [&>*]:rounded-full [&>*]:outline-offset-4 [&>*]:outline-1"
+          className="text-slate-700 w-[32px] h-[32px]"
           ripple={false}
           button-style="text"
           iconButton={true}
@@ -40,7 +40,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </DctButton>}
         <div className="flex-1">{title}</div>
         {position === 'left' && <DctButton
-          className="self-end text-slate-700 overflow-hidden [&>*:hover]:outline-fantarka-blue [&>*:hover]:outline [&>*]:rounded-full [&>*]:outline-offset-4 [&>*]:outline-1"
+          className="self-end text-slate-700 w-[32px] h-[32px]"
           ripple={false}
           button-style="text"
           iconButton={true}

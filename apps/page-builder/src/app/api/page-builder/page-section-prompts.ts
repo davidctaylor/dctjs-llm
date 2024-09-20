@@ -5,13 +5,15 @@ Process natural a language request to build an array of JSON objects that repres
 
 These are the valid component types: 
 - ACCORDION
-- BUTTON
 - CARD
 - CAROUSEL
+- LINK
 
 These are the attributes for components:
+- ACCORDION: content, heading
 - CARD: href, imageRef, title, subTitle
 - CAROUSEL: title
+- LINK: content, href, label
 
 AWLAYS validate ALL Components using the list of valid component types. If any Component has a type that is NOT VALID process the \
 request BUT ONLY prompt for additional information using the \

@@ -13,7 +13,8 @@ export const SectionContainer: React.FC<SectionContainerProps> = ({
 }) => {
   return (
     <section className="flex flex-col flex-1 p-6" data-component-id={id}>
-      <h2 className="text-lg text-center p-2">{heading}</h2>
+      <div className="border-t w-9/12 self-center"></div>
+      <h2 className="text-lg text-center py-6">{heading}</h2>
       {components.map((component) => {
         return loadComponent(component.componentType, component);
       })}

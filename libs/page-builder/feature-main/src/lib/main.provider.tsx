@@ -12,9 +12,7 @@ import {
   fetchPageBuilder,
   FetchState,
   FetchResponse,
-  PageBuilderSectionRequestType,
   PageBuilderSectionsType,
-  PageBuilderCarouseComponentType,
   PageBuilderBaseComponentType,
   PageBuilderComponentEnum,
 } from '@/shared-data';
@@ -67,9 +65,9 @@ const updateComponent = (
     return true;
   }
 
-  return Object.entries(comp).some(([key, val]) => {
+  return Object.entries(comp).some(([_key, val]) => {
     if (Array.isArray(val)) {
-      const idx = val.findIndex((x) => x.id == findId);
+      const idx = val.findIndex((x) => x.id === findId);
       if (idx > -1) {
         val[idx] = { ...obj };
       }
@@ -230,7 +228,7 @@ export const MainProvider = ({
         });
       }
     })();
-  }, [ctx.state.userPrompt]);
+  }, [ctx, ctx.state.userPrompt]);
 
   // useEffect(() => {
   //   if (requestState.state !== FetchState.IDLE) {
@@ -247,7 +245,7 @@ export const MainProvider = ({
     if (ctx.state.pageContent?.page) {
       sendMessage('page-builder', ctx.state.pageContent?.page);
     }
-  }, [ctx.state.pageContent?.page]);
+  }, [ctx.state.pageContent?.page, sendMessage]);
 
   // useEffect(() => {
   //   ctx.dispatch({

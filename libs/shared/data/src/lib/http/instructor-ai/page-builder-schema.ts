@@ -9,9 +9,9 @@ export enum PageBuilderComponentEnum {
 
 export enum PageBuilderComponentSectionEnum {
   ACCORDION = 'ACCORDION',
-  BUTTON = 'BUTTON',
   CARD = 'CARD',
   CAROUSEL = 'CAROUSEL',
+  LINK = 'LINK',
 }
 
 const PageBuilderComponentEnumInternal = z.nativeEnum(PageBuilderComponentEnum);
@@ -22,33 +22,18 @@ const BaseComponentSchema = z.object({
 
 const AccordianComponentSchema = BaseComponentSchema.extend({
   componentType: z.literal('ACCORDION'),
-  items: z.array(
-    z.object({
-      heading: z.union([z.string(), z.undefined()]),
-      content: z.union([z.string(), z.undefined()]),
-    })
-  ),
-}).describe('Accordion or Expansion Panel component');
+  heading: z.union([z.string(), z.undefined()]),
+  content: z.union([z.string(), z.undefined()]),
+}).describe('ACCORDION or Expansion Panel component');
 
-enum ButtonComponentColorType {
-  'primary',
-  'secondary',
-}
-
-enum ButtonComponentStyleType {
-  'elevated',
-  'filled',
-  'outlined',
-  'text',
-}
-
-const ButtonComponentSchema = BaseComponentSchema.extend({
-  componentType: z.literal('BUTTON'),
-  arialLabel: z.string().optional(),
-  buttonColor: z.nativeEnum(ButtonComponentColorType).optional(),
-  buttonStyle: z.nativeEnum(ButtonComponentStyleType).optional(),
-  disabled: z.boolean().optional(),
-}).describe('BUTTON component');
+const LinkComponentSchema = BaseComponentSchema.extend({
+  componentType: z.literal('LINK'),
+  content: z.union([z.string(), z.undefined()]),
+  href: z
+    .union([z.string(), z.undefined()])
+    .describe('HREF or URL for the link'),
+  label: z.union([z.string(), z.undefined()]).describe('Label for the link'),
+}).describe('LINK component');
 
 export const CardComponentSchema = BaseComponentSchema.extend({
   componentType: z.literal('CARD'),
@@ -88,12 +73,12 @@ export const PageBuilderSectionsSchema = z.object({
     .array(
       z.union([
         AccordianComponentSchema,
-        ButtonComponentSchema,
         CardComponentSchema,
         CarouselComponentSchema,
+        LinkComponentSchema,
       ])
     )
-    .describe('Array of ACCORDION, CARD or CAROUSEL components'),
+    .describe('Array of ACCORDION, CARD, CAROUSEL or LINK components'),
   content: z.union([z.string(), z.undefined()]),
   id: z.string().describe('Identifier for the page section object'),
 });

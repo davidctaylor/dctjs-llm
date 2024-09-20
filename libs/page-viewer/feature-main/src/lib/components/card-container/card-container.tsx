@@ -10,12 +10,6 @@ export interface CardProps {
   title?: string;
 }
 
-// content: z.string().optional(),
-// href: z.string().optional(),
-// imageRef: z.string().optional(),
-// title: z.string().optional(),
-// subTitle: z.string().optional(),
-
 export const CardContainer: React.FC<CardProps> = ({
   content,
   id,
@@ -35,7 +29,7 @@ export const CardContainer: React.FC<CardProps> = ({
       {content && (
         <DctCardContent>
           <div
-            dangerouslySetInnerHTML={{ __html: convertMarkdown.parse(content) }}
+            dangerouslySetInnerHTML={{ __html: convertMarkdown(content) }}
           ></div>
         </DctCardContent>
       )}

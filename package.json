@@ -8,8 +8,8 @@
   },
   "private": true,
   "dependencies": {
-    "@dctjs/react": "^1.0.8",
-    "@dctjs/web-components": "^1.0.8",
+    "@dctjs/react": "^1.0.13",
+    "@dctjs/web-components": "^1.0.13",
     "@instructor-ai/instructor": "^1.5.0",
     "marked-mangle": "^1.1.9",
     "marked-react": "^2.0.0",

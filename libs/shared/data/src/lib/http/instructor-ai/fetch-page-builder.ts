@@ -9,7 +9,7 @@ import {
   PageBuilderIntentClassificationType,
 } from './intent-classification-schema';
 
-const resp_sestion = {
+const resp_section = {
   prompts: [
     `intent-classification:my-bad`,
     'missing-attributes:section-1-carousel-1-card-1',
@@ -48,6 +48,38 @@ const resp_sestion = {
   },
 };
 
+const resp_section_accordion = {
+  prompts: [
+  ],
+  sectionsContent: {
+    componentType: 'PAGE_SECTION',
+    components: [
+      {
+        id: 'section-2-accordian-1',
+        componentType: 'ACCORDION',
+        content: '### Mesa Verde National Park\n\nMesa Verde National Park, located in southwestern Colorado, is a UNESCO World Heritage',
+        heading: 'Question number 1',
+      },
+
+      {
+        id: 'section-2-accordian-2',
+        componentType: 'ACCORDION',
+        content: '### Mesa Verde National Park\n\nMesa Verde National Park, located in southwestern Colorado, is a UNESCO World Heritage',
+        heading: 'Question number 2',
+      },
+    ],
+    heading: 'Frequently asked questions',
+    id: 'section-2',
+  },
+  _meta: {
+    usage: {
+      prompt_tokens: 1041,
+      completion_tokens: 293,
+      total_tokens: 1334,
+    },
+  },
+};
+
 export enum PageBuilderRequestTypeEnum {
   INTENT = 'INTENT',
   PAGE = 'PAGE',
@@ -58,7 +90,7 @@ const testRespose = (pageData: PageBuilderRequestType | undefined) => {
   console.log('XXX no send...');
   return Promise.resolve({
     ...pageData,
-    prompts: resp_sestion.prompts,
+    prompts: resp_section.prompts,
     ...(pageData?.page && {
       page: {
         ...pageData.page,
@@ -76,8 +108,9 @@ const testRespose = (pageData: PageBuilderRequestType | undefined) => {
           id: 'content-1',
         },
         sections: [
-          ...(resp_sestion.sectionsContent
-            ? [resp_sestion.sectionsContent as PageBuilderSectionsType]
+          ...[resp_section_accordion.sectionsContent as PageBuilderSectionsType],
+          ...(resp_section.sectionsContent
+            ? [resp_section.sectionsContent as PageBuilderSectionsType]
             : []),
         ],
         url: 'colorado-state-parks',

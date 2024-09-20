@@ -51,19 +51,16 @@ export const InputConfirmation: React.FC<InputConfirmationProps> = ({
 
       {Object.keys(componentSchema(component.componentType).shape)
         .filter((key) => !['id', 'componentType'].includes(key))
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         .filter((key) => !Array.isArray((component as any)[key]))
         .map((key) => {
           return (
-            <DctItem key={key} className="pl-0">
+            <DctItem key={key} className="">
               <FormInput
                 label={key}
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 value={(component as any)[key]}
-                onChange={(e) => {
-                  console.log(
-                    ((component as any)[key] = e.target.value)
-                  );
-                  updateModel(component);
-                }}
+                onChange={(e) => updateModel(component)}
                 type="text"
               ></FormInput>
             </DctItem>

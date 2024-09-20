@@ -4,7 +4,7 @@ import { useRef } from 'react';
 
 import { Sidebar } from '@/shared-ui';
 import { Header } from './components/header/header';
-import { PageBuilderForm } from './components/page-builder-form/page-builder-form';
+import { UserPromptForm } from './components/user-prompt-form/user-prompt-form';
 
 import { MainActions, MainProvider, InitializeMainContext } from './main.provider';
 
@@ -30,7 +30,7 @@ export const Main = () => {
             position="left"
             openEvent={() => mainContext.dispatch({ type: MainActions.SIDEBAR_LEFT, payload: null })}
           >
-            <PageBuilderForm></PageBuilderForm>
+            <UserPromptForm></UserPromptForm>
           </Sidebar>
           <div className="flex flex-col flex-1">
             <iframe

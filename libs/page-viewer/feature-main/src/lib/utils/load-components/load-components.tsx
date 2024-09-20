@@ -45,8 +45,20 @@ const COMPONENT_MAP: Record<
       })
     )
   ),
-  [PageBuilderComponentSectionEnum.ACCORDION]: undefined,
-  [PageBuilderComponentSectionEnum.BUTTON]: undefined,
+  [PageBuilderComponentSectionEnum.ACCORDION]: lazy(() =>
+    import('../../components/accordion-container/accordion-container').then(
+      ({ AccordionContainer }) => ({
+        default: AccordionContainer,
+      })
+    )
+  ),
+  [PageBuilderComponentSectionEnum.LINK]: lazy(() =>
+    import('../../components/link-container/link-container').then(
+      ({ LinkContainer }) => ({
+        default: LinkContainer,
+      })
+    )
+  ),
   [PageBuilderComponentSectionEnum.CARD]: lazy(() =>
     import('../../components/card-container/card-container').then(
       ({ CardContainer }) => ({
@@ -67,6 +79,7 @@ export const loadComponent = (
   props: any
 ) => {
   const Component = COMPONENT_MAP[compType as PageBuilderComponentEnum | PageBuilderComponentSectionEnum];
+
   if (Component !== undefined) {
     // console.log('XXX INIT Component', compType, props);
     return <Component key={props.id} {...props} />;
