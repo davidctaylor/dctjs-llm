@@ -49,22 +49,23 @@ const resp_section = {
 };
 
 const resp_section_accordion = {
-  prompts: [
-  ],
+  prompts: [],
   sectionsContent: {
     componentType: 'PAGE_SECTION',
     components: [
       {
         id: 'section-2-accordian-1',
         componentType: 'ACCORDION',
-        content: '### Mesa Verde National Park\n\nMesa Verde National Park, located in southwestern Colorado, is a UNESCO World Heritage',
+        content:
+          '### Mesa Verde National Park\n\nMesa Verde National Park, located in southwestern Colorado, is a UNESCO World Heritage',
         heading: 'Question number 1',
       },
 
       {
         id: 'section-2-accordian-2',
         componentType: 'ACCORDION',
-        content: '### Mesa Verde National Park\n\nMesa Verde National Park, located in southwestern Colorado, is a UNESCO World Heritage',
+        content:
+          '### Mesa Verde National Park\n\nMesa Verde National Park, located in southwestern Colorado, is a UNESCO World Heritage',
         heading: 'Question number 2',
       },
     ],
@@ -101,14 +102,16 @@ const testRespose = (pageData: PageBuilderRequestType | undefined) => {
           id: 'title-1',
         },
         pageContent: {
-          componentType: PageBuilderComponentEnum.CONTENT,
+          componentType: 'CONTENT',
           content:
             '### Mesa Verde National Park\n\nMesa Verde National Park, located in southwestern Colorado, is a UNESCO World Heritage site famous for its well-preserved Ancestral Puebloan cliff dwellings, notably the Cliff Palace. Visitors can explore a range of impressive archaeological sites that give a glimpse into the lives of the Ancestral Puebloans who lived there from approximately A.D. 600 to 1300. The park offers guided tours, hiking trails, and educational exhibits at the visitor center, making it a fantastic destination for history buffs and outdoor enthusiasts alike.\n\n### Great Sand Dunes National Park and Preserve\n\nGreat Sand Dunes National Park and Preserve, located in southern Colorado, is home to the tallest sand dunes in North America, rising up to 750 feet. This unique landscape provides a stunning contrast with the surrounding mountains and grasslands. The park offers a wide range of activities including sandboarding, hiking, and stargazing. Visitors can also explore Medano Creek, which flows at the base of the dunes seasonally, creating a beach-like environment perfect for family fun. With its striking natural beauty and diverse recreational opportunities, Great Sand Dunes is a must-visit Colorado destination.\n\n',
 
           id: 'content-1',
         },
         sections: [
-          ...[resp_section_accordion.sectionsContent as PageBuilderSectionsType],
+          ...[
+            resp_section_accordion.sectionsContent as PageBuilderSectionsType,
+          ],
           ...(resp_section.sectionsContent
             ? [resp_section.sectionsContent as PageBuilderSectionsType]
             : []),
@@ -120,8 +123,9 @@ const testRespose = (pageData: PageBuilderRequestType | undefined) => {
 };
 
 const fetchIntentClassifications = async (
+  pageData: PageBuilderRequestType,
   userContent: string
-): Promise<PageBuilderIntentClassificationType> => {
+): Promise<PageBuilderIntentClassificationType | null> => {
   const response = await fetch(`/api/page-builder`, {
     method: 'POST',
     headers: {
@@ -137,81 +141,116 @@ const fetchIntentClassifications = async (
     throw { message: response.statusText, status: response.status };
   }
 
-  const responseJson: PageBuilderIntentClassificationType =
+  const intentClassifications: PageBuilderIntentClassificationType =
     await response.json();
-  console.log('XXX GOT INTENT', response.status, responseJson);
 
-  return responseJson;
+  console.log('XXX intentClassifications', intentClassifications);
+  let invalid = false;
+  intentClassifications.intents.forEach((entry) => {
+    console.log('XXX itent', entry);
+    if (entry.intent === IntentClassificationEnum.INVALID) {
+      pageData.prompts.push(`intent-classification:${entry.text}`);
+      invalid = true;
+    }
+  });
+
+  return invalid ? null : intentClassifications;
+};
+
+const fetchPageData = async (
+  pageData: PageBuilderRequestType,
+  intent: { intent: IntentClassificationEnum; text?: string | undefined }
+): Promise<PageBuilderRequestType> => {
+  const response = await fetch(`/api/page-builder`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      userContent: intent.text,
+      requestType: intent.intent,
+      payload: JSON.stringify({
+        prompts: [],
+        ...(intent.intent === IntentClassificationEnum.SECTION && {components: pageData.page?.sections,})
+      }),
+    }),
+  });
+
+  if (response.status !== 200) {
+    throw { message: response.statusText, status: response.status };
+  }
+
+  const responseJson = await response.json();
+  console.log('XXX fetchPageData', intent.intent, responseJson);
+
+  if (responseJson && intent.intent === IntentClassificationEnum.PAGE) {
+    const data = responseJson as PageBuilderRequestType;
+
+    return {
+      ...pageData,
+      prompts: [...pageData.prompts, ...data.prompts],
+      ...(pageData.page && {
+        page: {
+          ...pageData.page,
+          ...data.page,
+          sections: [
+            ...(pageData.page.sections ? pageData.page.sections : []),
+          ],
+        },
+      }),
+    };
+  }
+
+  if (responseJson && intent.intent === IntentClassificationEnum.SECTION) {
+    const data = responseJson as PageBuilderSectionRequestType;
+
+    return {
+      ...pageData,
+      prompts: [...pageData.prompts, ...data.prompts],
+      ...(pageData.page && {
+        page: {
+          ...pageData.page,
+          sections: [
+            // ...(pageData.page.sections ? pageData.page.sections : []),
+            ...(data.components
+              ? [...data.components]
+              : pageData.page.sections ? pageData.page.sections : []),
+          ],
+        },
+      }),
+    };
+  }
+
+  return pageData;
 };
 
 export const fetchPageBuilder = async (
   userContent: string,
   pageData: PageBuilderRequestType
 ): Promise<PageBuilderRequestType> => {
-  const x = true;
+  const x = false;
   if (x) {
     return testRespose(pageData);
   }
 
-  const userIntent: IntentClassificationEnum = IntentClassificationEnum.SECTION;
-
   pageData.prompts = [];
 
   try {
-    const intentClassifications: PageBuilderIntentClassificationType =
-      await fetchIntentClassifications(userContent);
-    console.log('XXX intentClassifications', intentClassifications);
-    let invalid = false;
-    intentClassifications.intents.forEach((entry) => {
-      console.log('XXX itent', entry);
-      if (entry.intent === IntentClassificationEnum.INVALID) {
-        pageData.prompts.push(`intent-classification:${entry.text}`);
-        invalid = true;
-      }
-    });
+    const intentClassifications: PageBuilderIntentClassificationType | null =
+      await fetchIntentClassifications(pageData, userContent);
 
-    if (invalid) {
+    if (!intentClassifications) {
       return pageData;
     }
 
-    const response = await fetch(`/api/page-builder`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        userContent,
-        pageData,
-        requestType: PageBuilderRequestTypeEnum.INTENT,
-      }),
-    });
-    console.log('XXX GOT1', response);
+    pageData.prompts = [];
 
-    if (response.status !== 200) {
-      throw { message: response.statusText, status: response.status };
+    for await (const intent of intentClassifications.intents) {
+      console.log('XXX request section:', intent);
+      pageData = await fetchPageData(pageData, intent);
     }
 
-    const responseJson = await response.json();
-    console.log('XXX GOT', responseJson);
-
-    if (responseJson && userIntent === IntentClassificationEnum.SECTION) {
-      const sectionData = responseJson as PageBuilderSectionRequestType;
-      return {
-        ...pageData,
-        prompts: sectionData.prompts,
-        ...(pageData.page && {
-          page: {
-            ...pageData.page,
-            sections: [
-              ...(pageData.page.sections ? pageData.page.sections : []),
-              ...(sectionData.sectionsContent
-                ? [sectionData.sectionsContent]
-                : []),
-            ],
-          },
-        }),
-      };
-    }
+    console.log('XXX final page:', pageData)
 
     return pageData;
   } catch (error) {

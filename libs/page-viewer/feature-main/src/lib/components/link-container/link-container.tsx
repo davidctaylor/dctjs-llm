@@ -15,7 +15,7 @@ export const LinkContainer: React.FC<LinkProps> = ({
   return (
     <>
       <a
-        className="h-[40px] text-center leading-10 -cursor-pointer bg-violet-900 text-white rounded-full hover:bg-violet-600"
+        className="h-[40px] text-center leading-10 w-min px-4 cursor-pointer bg-violet-900 text-white rounded-full hover:bg-violet-600"
         href={href}
       >
         {label}

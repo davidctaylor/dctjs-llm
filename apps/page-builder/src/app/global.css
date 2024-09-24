@@ -6,35 +6,13 @@
 
 
 @layer base {
-  /* dct-card {
-    border-width: 1px;
-    img {
-      object-fit: contain;
-      padding-top: 1rem;
-    }
-  } */
-
-
-
-  dct-card-title {
-    /* --dct-card-title-padding-left: 0rem;
-    --dct-card-title-padding-right: 0rem; */
-    /* --dct-card-title-padding-top: 0rem; */
-    /* --dct-card-title-padding-bottom: 0rem; */
-  }
-
-  dct-card.card-container.outlined.hydrated.card-small {
-    background-color: green;
-    padding: 0;
-    object-fit: cover;
-    img {
-      height: 252px;
-    }
+  
+  dct-card {
+    @apply border;
   }
   
   dct-carousel {
     dct-card {
-      @apply border;
       width: 197px;
       max-width: 187px;
       height: 252px;

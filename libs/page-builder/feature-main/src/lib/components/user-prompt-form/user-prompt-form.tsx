@@ -1,8 +1,5 @@
 import { SyntheticEvent, useContext, useEffect, useRef, useState } from 'react';
-import {
-  MdArrowCircleDown,
-  MdArrowDropUp,
-} from 'react-icons/md';
+import { MdArrowCircleDown, MdArrowDropUp } from 'react-icons/md';
 
 import { DctButton, DctAccordion, DctItemHeading, DctItem } from '@dctjs/react';
 
@@ -15,6 +12,7 @@ import { InputConfirmation } from '../input-confirmation/input-confirmation';
 const DEFAULT_TEXTAREA_HEIGHT = '40px';
 
 interface PromptTypes {
+  error?: string;
   attributes: string[];
   classifications: string[];
 }
@@ -24,9 +22,9 @@ export interface UserPromptFormProps {}
 
 export const UserPromptForm = () => {
   const mainContext = useContext(MainContext);
-  const [userInput, setUserInput] = useState<string>('');
+  const [userPrompt, setUserPrompt] = useState<string>('');
   const textRef = useRef<HTMLTextAreaElement>(null);
-  const [messages, setMessages] = useState<string[]>([]);
+  const [messages, setMessages] = useState<{ id: number; mesg: string }[]>([]);
   const [promptTypes, setPromptTypes] = useState<PromptTypes>();
 
   useEffect(() => {
@@ -38,13 +36,15 @@ export const UserPromptForm = () => {
       mainContext.state.pageStatus.state === FetchState.ERROR &&
       mainContext.state.pageStatus.errorStatusText
     ) {
-      setMessages([`Processing error: ${mainContext.state.pageStatus.errorStatusCode} ${mainContext.state.pageStatus.errorStatusText}`]);
+      setPromptTypes({
+        attributes: [],
+        classifications: [],
+        error: `${mainContext.state.pageStatus.errorStatusText} code: ${mainContext.state.pageStatus.errorStatusCode} `,
+      });
       return;
     }
 
     if (mainContext?.state.pageContent?.prompts) {
-      console.log('XXX PROMPTS:', mainContext?.state.pageContent?.prompts);
-
       const prompts: PromptTypes = mainContext.state.pageContent.prompts.reduce(
         (a: PromptTypes, prompt: string | undefined) => {
           if (!prompt) {
@@ -57,7 +57,10 @@ export const UserPromptForm = () => {
           }
           if (parts[0] === 'missing-attributes') {
             a.attributes.push(parts[1]);
-          } else if (parts[0] === 'intent-classification') {
+          } else if (
+            parts[0] === 'intent-classification' ||
+            parts[0] === 'invalid-component'
+          ) {
             a.classifications.push(parts[1]);
           }
 
@@ -66,6 +69,7 @@ export const UserPromptForm = () => {
         {
           attributes: [],
           classifications: [],
+          error: undefined,
         }
       );
 
@@ -74,16 +78,19 @@ export const UserPromptForm = () => {
   }, [mainContext]);
 
   const handleClick = (event: Event) => {
-    console.log('XXX SUB', userInput.trim());
-    if (!userInput.trim()) {
+    if (!userPrompt.trim()) {
       return;
     }
 
-    setMessages([userInput]);
-    setUserInput('');
+    setMessages((prevMessages) => [
+      { id: Date.now(), mesg: userPrompt },
+      ...prevMessages,
+    ]);
+
+    setUserPrompt('');
     mainContext?.dispatch({
       type: MainActions.USER_PROMPT,
-      payload: userInput,
+      payload: { timestamp: Date.now(), prompt: userPrompt },
     });
     textRef.current &&
       (textRef.current.style.minHeight = DEFAULT_TEXTAREA_HEIGHT);
@@ -98,7 +105,7 @@ export const UserPromptForm = () => {
     if (!textRef.current) {
       return;
     }
-    setUserInput(target.value);
+    setUserPrompt(target.value);
     textRef.current.style.minHeight = DEFAULT_TEXTAREA_HEIGHT;
     textRef.current.style.minHeight = `${target.scrollHeight}px`;
   };
@@ -114,21 +121,19 @@ export const UserPromptForm = () => {
             <span slot="start">
               <MdArrowDropUp size={24} />
             </span>
-            <p slot="heading">Classify</p>
+            <p slot="heading">Classification error</p>
             <p slot="sub-heading">{cls}</p>
           </DctItemHeading>
-          <DctItem className="pl-0">
+          <DctItem>
             <p>Unable to process request due to unknown component</p>
           </DctItem>
         </DctAccordion>
       );
     });
   };
+
   const confirmations = () => {
-    if (!promptTypes?.attributes) {
-      return [];
-    }
-    const comps = promptTypes.attributes.reduce(
+    const comps = promptTypes?.attributes.reduce(
       (a: PageBuilderBaseComponentType[], compId) => {
         mainContext?.state.pageContent?.page?.sections?.forEach((section) => {
           section.components.forEach((comp) => {
@@ -145,9 +150,30 @@ export const UserPromptForm = () => {
       []
     );
 
-    return comps.map((comp) => (
-      <InputConfirmation key={comp.id} component={comp}></InputConfirmation>
-    ));
+    return comps
+      ? comps.map((comp) => (
+          <InputConfirmation key={comp.id} component={comp}></InputConfirmation>
+        ))
+      : [];
+  };
+
+  const apiError = () => {
+    if (promptTypes?.error) {
+      return (
+        <DctAccordion className="bg-red-50 m-2 overflow-hidden rounded-lg">
+          <DctItemHeading slot="heading" animateIcons={true}>
+            <span slot="start">
+              <MdArrowDropUp size={24} />
+            </span>
+            <p slot="heading">Processing error</p>
+          </DctItemHeading>
+          <DctItem>
+            <p>Unable to process request due the following error</p>
+            <p>{promptTypes?.error}</p>
+          </DctItem>
+        </DctAccordion>
+      );
+    }
   };
 
   return (
@@ -158,7 +184,7 @@ export const UserPromptForm = () => {
           placeholder="Let's build a page"
           onChange={onChangeHandler}
           ref={textRef}
-          value={userInput}
+          value={userPrompt}
         ></textarea>
 
         {mainContext?.state.pageStatus.state === FetchState.ACTIVE && (
@@ -179,16 +205,15 @@ export const UserPromptForm = () => {
         )}
       </form>
       <div className="overflow-y-scroll h-full max-h-[calc(100vh-265px)] border rounded-lg">
+        {apiError()}
         {classifications()}
         {confirmations()}
-
-        <div className="">
-          {messages.map((msg, idx) => (
-            <div className="flex flex-1 justify-end p-2">
-              <div className="rounded-3xl bg-[#f4f4f4] p-2">{msg}</div>
-            </div>
-          ))}
-        </div>
+        {messages.map((msg, idx) => (
+          <div key={`user-${msg.id}`} className="w-full pt-4 ">
+            <div className={`${idx > 0 ? 'border-t' : ''} m-auto w-11/12`}></div>
+            <div className="px-4 pt-4">{msg.mesg}</div>
+          </div>
+        ))}
       </div>
     </div>
   );

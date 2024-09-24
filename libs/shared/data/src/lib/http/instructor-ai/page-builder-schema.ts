@@ -1,7 +1,6 @@
 import { z } from 'zod';
 
 export enum PageBuilderComponentEnum {
-  CONTENT = 'CONTENT',
   PAGE_CONTAINER = 'PAGE_CONTAINER',
   PAGE_SECTION = 'PAGE_SECTION',
   PAGE_TITLE = 'PAGE_TITLE',
@@ -20,13 +19,13 @@ const BaseComponentSchema = z.object({
   id: z.string(),
 });
 
-const AccordianComponentSchema = BaseComponentSchema.extend({
+export const AccordionComponentSchema = BaseComponentSchema.extend({
   componentType: z.literal('ACCORDION'),
   heading: z.union([z.string(), z.undefined()]),
   content: z.union([z.string(), z.undefined()]),
 }).describe('ACCORDION or Expansion Panel component');
 
-const LinkComponentSchema = BaseComponentSchema.extend({
+export const LinkComponentSchema = BaseComponentSchema.extend({
   componentType: z.literal('LINK'),
   content: z.union([z.string(), z.undefined()]),
   href: z
@@ -72,7 +71,7 @@ export const PageBuilderSectionsSchema = z.object({
   components: z
     .array(
       z.union([
-        AccordianComponentSchema,
+        AccordionComponentSchema,
         CardComponentSchema,
         CarouselComponentSchema,
         LinkComponentSchema,
@@ -80,8 +79,9 @@ export const PageBuilderSectionsSchema = z.object({
     )
     .describe('Array of ACCORDION, CARD, CAROUSEL or LINK components'),
   content: z.union([z.string(), z.undefined()]),
+  heading: z.union([z.string(), z.undefined()]),
   id: z.string().describe('Identifier for the page section object'),
-});
+}).describe('PAGE_SECTION component');
 
 export const PageBuilderSchema = z
   .object({
@@ -92,7 +92,7 @@ export const PageBuilderSchema = z
       z.undefined(),
       z
         .object({
-          componentType: PageBuilderComponentEnumInternal,
+          componentType: z.literal('PAGE_TITLE'),
           title: z
             .union([z.string(), z.undefined()])
             .describe('Title of page or article'),
@@ -103,7 +103,7 @@ export const PageBuilderSchema = z
           id: z.string(),
         })
         .describe(
-          'Title and sub-title for the page. Compoenent type "PAGE_TITLE"'
+          'PAGE_TITLE component'
         ),
     ]),
     pageContent: z
@@ -122,26 +122,9 @@ export const PageBuilderSchema = z
         .describe('Array of Page Sections components'),
       z.undefined(),
     ]),
-    // .object({
-    //   components: z
-    //     .array(
-    //       z.union([
-    //         AccordianComponentSchema,
-    //         CardComponentSchema,
-    //         CarouselComponentSchema,
-    //       ])
-    //     )
-    //     .describe('An array of components that maybe part of the section')
-    //     .optional(),
-    //   componentType: PageBuilderComponentEnumInternal,
-    //   heading: z.string().optional().describe('Sections heading or title'),
-    //   id: z.string(),
-    // })
-    // .describe('An array of section objects. Component type "PAGE_SECTION"')
-    // .optional(),
     url: z.union([z.string(), z.undefined()]),
   })
-  .describe('Page container. Component type "PAGE_CONTAINER"');
+  .describe('PAGE_CONTAINER');
 
 export const PageBuilderRequestSchema = z.object({
   prompts: z.array(z.union([z.string(), z.undefined()])),
@@ -149,25 +132,9 @@ export const PageBuilderRequestSchema = z.object({
 });
 
 export const PageBuilderSectionsRequestSchema = z.object({
-  prompts: z.array(z.string()),
-  sectionsContent: z.union([PageBuilderSectionsSchema, z.undefined()]),
-});
-
-// export const MaybePageBuilderPromptSchema = (schema: typeof PageBuilderPromptSchema) => z.object({
-//   result: PageBuilderPromptSchema.optional(),
-//   error: z.boolean(),
-//   message: z.string().optional(),
-// });
-
-// const Maybe = (schema: any) => z.object({
-//   result: schema.optional(),
-//   error: z.boolean().optional(),
-//   message: z.string().optional(),
-// });
-
-// const MaybeUser = Maybe(UserDetail);
-
-// export const MaybePageBuilderPromptSchema = Maybe(PageBuilderPromptSchema);
+  prompts: z.array(z.union([z.string(), z.undefined()])),
+  components: z.array(PageBuilderSectionsSchema),
+}).describe('PAGE_SECTION_REQUEST');
 
 export type PageBuilderType = z.infer<typeof PageBuilderSchema>;
 export type PageBuilderSectionsType = z.infer<typeof PageBuilderSectionsSchema>;
@@ -175,7 +142,7 @@ export type PageBuilderRequestType = z.infer<typeof PageBuilderRequestSchema>;
 export type PageBuilderSectionRequestType = z.infer<
   typeof PageBuilderSectionsRequestSchema
 >;
+export type PageBuilderBaseComponentType = z.infer<typeof BaseComponentSchema>;
 export type PageBuilderCarouseComponentType = z.infer<
   typeof CarouselComponentSchema
 >;
-export type PageBuilderBaseComponentType = z.infer<typeof BaseComponentSchema>;

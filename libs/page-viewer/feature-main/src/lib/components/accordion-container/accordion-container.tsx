@@ -16,12 +16,12 @@ export const AccordionContainer: React.FC<AccordionProps> = ({
   const [opened, setOpened] = useState<boolean>(false);
 
   return (
-    <DctAccordion className="" onAccordionChange={(e) => setOpened(e.detail.expaned)}>
+    <DctAccordion className="" onAccordionChange={(e) => setOpened(e.detail.expanded)}>
       <DctItemHeading slot="heading" animateIcons={true} >
         <span slot="end">
           {opened ? <MdRemove size={24}/> : <MdAdd size={24}/>}
         </span>
-        <p slot="heading">{heading}</p>
+        <p className="text-left" slot="heading">{heading}</p>
       </DctItemHeading>
       <DctItem>
         {content && (

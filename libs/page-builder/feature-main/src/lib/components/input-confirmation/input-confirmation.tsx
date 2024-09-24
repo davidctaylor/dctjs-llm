@@ -3,8 +3,10 @@ import { MdArrowDropUp } from 'react-icons/md';
 import { DctAccordion, DctItem, DctItemHeading } from '@dctjs/react';
 
 import {
+  AccordionComponentSchema,
   CardComponentSchema,
   CarouselComponentSchema,
+  LinkComponentSchema,
   PageBuilderBaseComponentType,
 } from '@/shared-data';
 import { FormInput } from '@/shared-ui';
@@ -12,10 +14,14 @@ import { MainActions, MainContext } from '../../main.provider';
 
 const componentSchema = (componentType: string | undefined) => {
   switch(componentType) {
+    case 'ACCORDION':
+      return AccordionComponentSchema;
     case 'CAROUSEL':
       return CarouselComponentSchema;
     case 'CARD':
       return CardComponentSchema;
+    case 'LINK':
+      return LinkComponentSchema;
     default:
       return CardComponentSchema;
   }
@@ -46,7 +52,8 @@ export const InputConfirmation: React.FC<InputConfirmationProps> = ({
         <span slot="start">
           <MdArrowDropUp size={24} />
         </span>
-        <div slot="heading">Update {component.componentType}</div>
+        <div className="capitalize" slot="heading">{(component.componentType as string).toLocaleLowerCase()}</div>
+        <div className="capitalize" slot="sub-heading">{component.id}</div>
       </DctItemHeading>
 
       {Object.keys(componentSchema(component.componentType).shape)

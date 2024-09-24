@@ -16,10 +16,6 @@ import {
   SECTION_ASSISTANT_CONTENT,
   SECTION_SYSTEM_CONTENT,
 } from './page-section-prompts';
-import {
-  ChatCompletionMessageParam,
-  ChatCompletionRole,
-} from 'openai/resources/chat/completions';
 
 export const runtime = 'nodejs';
 
@@ -59,7 +55,6 @@ const responseModel = (requestType: PageBuilderRequestTypeEnum) => {
     case PageBuilderRequestTypeEnum.PAGE:
       return { schema: PageBuilderRequestSchema, name: 'PageBuilder' };
     case PageBuilderRequestTypeEnum.SECTION:
-      // return { schema: PageBuilderPromptSchema, name: 'PageBuilder' };
       return { schema: PageBuilderSectionsRequestSchema, name: 'PageSectionsBuilder' };
   }
 };
@@ -71,19 +66,28 @@ export async function POST(request: NextRequest) {
   if (!reqType) {
     return { message: `Invalid or missing request type ${requestType}` };
   }
+  console.log('XXX intent', requestType);
   console.log('XXX userContent', userContent);
-  console.log('XXX system', systemContent(reqType));
+  console.log('XXX payload', payload);
+  let x;
+  if (reqType === PageBuilderRequestTypeEnum.SECTION) {
+    x = `${systemContent(reqType)}\n####\n${payload}\n####\n`;
+  } else {
+    x = systemContent(reqType);
+  }
 
+
+  
   const messages: any[] = [
-    { role: 'system', content: systemContent(reqType) },
-    ...(payload
-      ? [
-          {
-            role: 'assistant' as ChatCompletionRole,
-            content: assistantContent(reqType, payload),
-          },
-        ]
-      : []),
+    { role: 'system', content: x},
+    // ...(payload
+    //   ? [
+    //       {
+    //         role: 'assistant' as ChatCompletionRole,
+    //         content: assistantContent(reqType, payload),
+    //       },
+    //     ]
+    //   : []),
     { role: 'user', content: userContent },
   ];
 
