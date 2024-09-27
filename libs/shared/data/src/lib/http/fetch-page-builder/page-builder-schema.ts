@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 export enum PageBuilderComponentEnum {
   PAGE_CONTAINER = 'PAGE_CONTAINER',
+  PAGE_CONTENT = 'PAGE_CONTENT',
   PAGE_SECTION = 'PAGE_SECTION',
   PAGE_TITLE = 'PAGE_TITLE',
 }

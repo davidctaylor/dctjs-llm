@@ -17,13 +17,6 @@ const COMPONENT_MAP: Record<
       })
     )
   ),
-  // [PageBuilderComponentType.PAGE_SECTIONS]: lazy(() =>
-  //   import('../../components/section-container/section-container').then(
-  //     ({ SectionContainer }) => ({
-  //       default: SectionContainer,
-  //     })
-  //   )
-  // ),
   [PageBuilderComponentEnum.PAGE_SECTION]: lazy(() =>
     import('../../components/section-container/section-container').then(
       ({ SectionContainer }) => ({
@@ -38,7 +31,7 @@ const COMPONENT_MAP: Record<
       })
     )
   ),
-  [PageBuilderComponentEnum.CONTENT]: lazy(() =>
+  [PageBuilderComponentEnum.PAGE_CONTENT]: lazy(() =>
     import('../../components/content-container/content-container').then(
       ({ ContentContainer }) => ({
         default: ContentContainer,
@@ -81,7 +74,6 @@ export const loadComponent = (
   const Component = COMPONENT_MAP[compType as PageBuilderComponentEnum | PageBuilderComponentSectionEnum];
 
   if (Component !== undefined) {
-    // console.log('XXX INIT Component', compType, props);
     return <Component key={props.id} {...props} />;
   }
   console.error(`Unknown component type ${compType}`)

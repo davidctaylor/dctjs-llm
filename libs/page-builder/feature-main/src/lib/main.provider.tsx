@@ -17,7 +17,7 @@ import {
   PageBuilderBaseComponentType,
   PageBuilderComponentEnum,
 } from '@/shared-data';
-import { usePostMessage } from '@/shared-ui';
+import { usePageHighlight, usePostMessage } from '@/shared-ui';
 
 export enum MainActions {
   PAGE_CONTENT,
@@ -55,87 +55,8 @@ const initialState: MainState = {
     },
     prompts: [],
   },
-  // pageContent: {
-  //   "page": {
-  //       "componentType": "PAGE_CONTAINER",
-  //       "id": "default",
-  //       "sections": [
-  //           {
-  //               "componentType": "PAGE_SECTION",
-  //               "components": [
-  //                   {
-  //                       "id": "section-0-carousel-1",
-  //                       "componentType": "CAROUSEL",
-  //                       "cards": [
-  //                           {
-  //                               "id": "section-0-carousel-1-card-1",
-  //                               "componentType": "CARD",
-  //                               "imageRef": "/images/default-image.png"
-  //                           },
-  //                           {
-  //                               "id": "section-0-carousel-1-card-2",
-  //                               "componentType": "CARD",
-  //                               "title": "card-2"
-  //                           }
-  //                       ],
-  //                       "title": "Image gallery of Colorado State Parks"
-  //                   }
-  //               ],
-  //               "id": "section-0"
-  //           },
-  //           {
-  //               "componentType": "PAGE_SECTION",
-  //               "components": [
-  //                   {
-  //                       "id": "section-1-card-1",
-  //                       "componentType": "CARD",
-  //                       "title": "Display card",
-  //                       "content": "card content card content card content",
-  //                       "subTitle": "sub title display card",
-  //                   }
-  //               ],
-  //               "heading": "Display cards",
-  //               "id": "section-1"
-  //           },
-  //           {
-  //               "componentType": "PAGE_SECTION",
-  //               "components": [
-  //                   {
-  //                       "id": "section-2-accordion-1",
-  //                       "componentType": "ACCORDION",
-  //                       "heading": "What are the opening hours for Mesa Verde State Park?",
-  //                       "content": "Mesa Verde State Park is generally open year-round; however, hours differ seasonally."
-  //                   },
-  //                   {
-  //                       "id": "section-2-accordion-2",
-  //                       "componentType": "ACCORDION",
-  //                       "heading": "Are guided tours available at Mesa Verde?",
-  //                       "content": "Yes, ranger-led tours are available and are a great way to explore archaeological sites."
-  //                   },
-  //                   {
-  //                       "id": "section-2-accordion-3",
-  //                       "componentType": "ACCORDION",
-  //                       "heading": "What is the best time of year to visit Mesa Verde?",
-  //                       "content": "Spring and fall offer pleasant weather and fewer crowds."
-  //                   },
-  //                   {
-  //                       "id": "section-2-link-1",
-  //                       "componentType": "LINK",
-  //                       "content": "",
-  //                       "href": "http://123.com",
-  //                       "label": "click me!"
-  //                   }
-  //               ],
-  //               "heading": "Frequently asked questions",
-  //               "id": "section-2"
-  //           }
-  //       ]
-  //   },
-  //   "prompts": []
-  // },
-
   pageStatus: { state: FetchState.IDLE },
-  sidebarState: { left: true, right: false },
+  sidebarState: { left: false, right: true },
   userPrompt: undefined,
 };
 
@@ -256,7 +177,6 @@ const useMainReducer = (state: MainState, action: MainAction) => {
 
 export const InitializeMainContext = () => {
   const [state, dispatch] = useReducer(useMainReducer, initialState);
-
   const contextValue = useMemo(() => ({ state, dispatch }), [state, dispatch]);
 
   return contextValue;
@@ -279,8 +199,13 @@ export const MainProvider = ({
   children: React.ReactNode;
   iframeRef?: RefObject<HTMLIFrameElement | null>;
 }) => {
-  // const [pageData, requestState, setUserPrompt] = usePageBuilderFetch();
   const { sendMessage } = usePostMessage('*', undefined, iframeRef);
+
+  usePostMessage('*', {mesgType: 'page-rendered', cb: (mesg: unknown) => {
+    // setRefresh(Date.now());
+  }});
+
+  // const { setRefresh } = usePageHighlight(true, iframeRef);
   const userPromptRef = useRef<UserPromptType>();
 
   // As an expert on Colorado state create two questions and and answers for visitors to the parks. Add a Accordion
@@ -289,8 +214,8 @@ export const MainProvider = ({
   //Add a Accordion with the heading "What is the weather like" and the content "XX Freezing cold"
 
   let p = `
-  As expert on Colorado state parks, create an article of no more that 500 words with a paragrap for each of the parks 'Mesa Verde', 'Great Sand Dunes' 
-    and the 'Rocky Mountain National Park' with the title 'Colorful Colorado State parks'. Style your response using Markdown
+  As expert on Colorado state parks, create an article of no more that 500 words with a paragraph for each of the parks 'Mesa Verde', 
+  'Great Sand Dunes' and the 'Rocky Mountain National Park' with the title 'Colorful Colorado State parks'. Style your response using Markdown
   `;
   p = `
   Create a section with a Carousel, the title of the Carousel is "Image gallery of Colorado State Parks"\n. Add a Card with the image url 
@@ -298,9 +223,14 @@ export const MainProvider = ({
   `;
 
   p = `
+  Create a section with a Carousel, the title of the Carousel is "Image gallery of Colorado State Parks"\n. Add a Card with the image url 
+    "/images/garden.jpg". Add an Card with the image url "/images/great-sand-dunes.jpg". Add an Card with the image url "/images/rockies.jpg"
+  `;
+
+  p = `
   Create a new section with the heading "Frequently asked questions".
   As an expert on Colorado state parks generate three common questions and answers for visitors to the Mesa Verde state park. 
-  Use these to create Acccordions with the question in the acccordion 'heading' and the answer in acccordion content'
+  Use these to create Accordions with the question in the accordion 'heading' and the answer in accordion content'
   Add a CTA with the label "click me!" and the href "http://123.com"
 `;
 
@@ -337,9 +267,9 @@ export const MainProvider = ({
           type: MainActions.PAGE_CONTENT,
           payload: response,
         });
+        
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
-        console.log('XXX error', error);
         ctx.dispatch({
           type: MainActions.PAGE_STATUS,
           payload: {
@@ -354,7 +284,7 @@ export const MainProvider = ({
 
   useEffect(() => {
     if (ctx.state.pageContent?.page) {
-      sendMessage('page-builder', ctx.state.pageContent?.page);
+      sendMessage('page-load', ctx.state.pageContent?.page);
     }
   }, [ctx.state.pageContent?.page]);
 

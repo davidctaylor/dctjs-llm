@@ -18,9 +18,9 @@ interface PromptTypes {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface UserPromptFormProps {}
+export interface PromptFormProps {}
 
-export const UserPromptForm = () => {
+export const PromptForm = () => {
   const mainContext = useContext(MainContext);
   const [userPrompt, setUserPrompt] = useState<string>('');
   const textRef = useRef<HTMLTextAreaElement>(null);

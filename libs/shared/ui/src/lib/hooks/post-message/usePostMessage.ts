@@ -12,12 +12,19 @@ export const usePostMessage = (
 ) => {
   const sendMessage = (mesgType: string, mesg: object) => {
     ref?.current?.contentWindow?.postMessage({ mesgType, mesg }, origin);
+
+  };
+
+  const sendParent = (mesgType: string, mesg: object, ref?: RefObject<HTMLIFrameElement | null>) => {
+    if (ref?.current) {
+      ref.current.contentWindow?.postMessage({ mesgType, mesg }, origin);
+      return;
+    }
+    window.parent.postMessage({ mesgType, mesg }, origin)
   };
 
   const onMessageEvent = useCallback(
     ({ data }: MessageEvent) => {
-      const { mesgType, mesg } = data;
-
       if (data.mesgType === eventHandler?.mesgType) {
         eventHandler?.cb(data.mesg);
       }
@@ -31,5 +38,5 @@ export const usePostMessage = (
     return () => window.removeEventListener('message', onMessageEvent);
   }, [origin, onMessageEvent]);
 
-  return { sendMessage };
+  return { sendMessage, sendParent };
 };

@@ -19,14 +19,14 @@ import {
 
 export const runtime = 'nodejs';
 
-const systemContent = (requestType: PageBuilderRequestTypeEnum) => {
+const systemContent = (requestType: PageBuilderRequestTypeEnum, payload: any) => {
   switch (requestType) {
     case PageBuilderRequestTypeEnum.INTENT:
       return INTENT_SYSTEM_CONTENT;
     case PageBuilderRequestTypeEnum.PAGE:
       return PAGE_SYSTEM_CONTENT;
     case PageBuilderRequestTypeEnum.SECTION:
-      return SECTION_SYSTEM_CONTENT;
+      return `${SECTION_SYSTEM_CONTENT}\n####\n${payload}\n####\n`;
   }
 };
 
@@ -45,7 +45,6 @@ const assistantContent = (
 };
 
 const responseModel = (requestType: PageBuilderRequestTypeEnum) => {
-
   switch (requestType) {
     case PageBuilderRequestTypeEnum.INTENT:
       return {
@@ -69,17 +68,9 @@ export async function POST(request: NextRequest) {
   console.log('XXX intent', requestType);
   console.log('XXX userContent', userContent);
   console.log('XXX payload', payload);
-  let x;
-  if (reqType === PageBuilderRequestTypeEnum.SECTION) {
-    x = `${systemContent(reqType)}\n####\n${payload}\n####\n`;
-  } else {
-    x = systemContent(reqType);
-  }
-
-
   
   const messages: any[] = [
-    { role: 'system', content: x},
+    { role: 'system', content: systemContent(reqType, payload)},
     // ...(payload
     //   ? [
     //       {

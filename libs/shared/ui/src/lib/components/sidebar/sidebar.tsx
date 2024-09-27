@@ -38,7 +38,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         >
          <MdClose size={32}/>
         </DctButton>}
-        <div className="flex-1">{title}</div>
+        <div className="flex-1 pl-4">{title}</div>
         {position === 'left' && <DctButton
           className="self-end text-slate-700 w-[32px] h-[32px]"
           ripple={false}
