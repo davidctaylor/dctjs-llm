@@ -31,7 +31,7 @@ questions and answers for visitors to the Mesa Verde state park. Use these to cr
 accordion 'heading' and the answer in accordion content' Add a CTA with the label "click me!" and the href "http://123.com"
 ```
 
-![Alt text](https://github.com/davidctaylor/dctjs-llm/example-result.svg "Example of generated page")
+![Alt text](https://github.com/davidctaylor/dctjs-llm/example-result.png "Example of generated page")
 
 ## Start the application
 
