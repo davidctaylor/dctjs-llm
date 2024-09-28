@@ -56,7 +56,7 @@ const initialState: MainState = {
     prompts: [],
   },
   pageStatus: { state: FetchState.IDLE },
-  sidebarState: { left: false, right: true },
+  sidebarState: { left: false, right: false },
   userPrompt: undefined,
 };
 
