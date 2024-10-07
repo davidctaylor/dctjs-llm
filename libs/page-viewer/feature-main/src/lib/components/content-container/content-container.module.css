@@ -1,5 +1,8 @@
 .contentContainer {
-  h3 {
+  h1, h2, h3 {
     @apply font-medium pt-6 pb-2; 
+  }
+  p:has(strong) {
+    @apply pt-6 pb-2; 
   }
 }

@@ -17,7 +17,8 @@ import {
   PageBuilderBaseComponentType,
   PageBuilderComponentEnum,
 } from '@/shared-data';
-import { usePageHighlight, usePostMessage } from '@/shared-ui';
+import { usePostMessage } from '@/shared-ui';
+import { usePageHighlight } from './hooks/page-highlight/usePageHighlight';
 
 export enum MainActions {
   PAGE_CONTENT,
@@ -56,7 +57,7 @@ const initialState: MainState = {
     prompts: [],
   },
   pageStatus: { state: FetchState.IDLE },
-  sidebarState: { left: false, right: false },
+  sidebarState: { left: true, right: false },
   userPrompt: undefined,
 };
 
@@ -191,6 +192,7 @@ export const MainProvider = ({
   ctx,
   children,
   iframeRef,
+  overlayRef,
 }: {
   ctx: {
     state: MainState;
@@ -198,20 +200,16 @@ export const MainProvider = ({
   };
   children: React.ReactNode;
   iframeRef?: RefObject<HTMLIFrameElement | null>;
+  overlayRef?: RefObject<HTMLDivElement | null>;
 }) => {
   const { sendMessage } = usePostMessage('*', undefined, iframeRef);
 
   usePostMessage('*', {mesgType: 'page-rendered', cb: (mesg: unknown) => {
-    // setRefresh(Date.now());
+    setRefresh(Date.now());
   }});
 
-  // const { setRefresh } = usePageHighlight(true, iframeRef);
+  const { setRefresh } = usePageHighlight(true, iframeRef, overlayRef);
   const userPromptRef = useRef<UserPromptType>();
-
-  // As an expert on Colorado state create two questions and and answers for visitors to the parks. Add a Accordion
-  // for reach
-
-  //Add a Accordion with the heading "What is the weather like" and the content "XX Freezing cold"
 
   let p = `
   As expert on Colorado state parks, create an article of no more that 500 words with a paragraph for each of the parks 'Mesa Verde', 

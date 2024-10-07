@@ -28,7 +28,6 @@ export const PromptForm = () => {
   const [promptTypes, setPromptTypes] = useState<PromptTypes>();
 
   useEffect(() => {
-    console.log('XXX FORM STATE', mainContext?.state);
     if (!mainContext?.state) {
       return;
     }

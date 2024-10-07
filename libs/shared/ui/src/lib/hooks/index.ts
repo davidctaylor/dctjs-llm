@@ -1,2 +1,3 @@
-export * from './page-highlight/usePageHighlight';
+export * from './debounce/useDebounce';
 export * from './post-message/usePostMessage';
+export * from './scroll-position/useScrollPosition';

@@ -3,19 +3,22 @@ import { convertMarkdown } from '@/shared-ui';
 export interface LinkProps {
   content?: string;
   href?: string;
+  id: string;
   label?: string;
 }
 
 export const LinkContainer: React.FC<LinkProps> = ({
   content,
   href,
+  id,
   label,
 }) => {
 
   return (
-    <>
+    <div className='flex flex-col h-auto'>
       <a
-        className="h-[40px] text-center leading-10 w-min px-4 cursor-pointer bg-violet-900 text-white rounded-full hover:bg-violet-600"
+        data-component-id={id} 
+        className="flex text-nowrap h-[40px] text-center leading-10 w-min px-4 cursor-pointer bg-violet-900 text-white rounded-full hover:bg-violet-600"
         href={href}
       >
         {label}
@@ -26,6 +29,6 @@ export const LinkContainer: React.FC<LinkProps> = ({
           dangerouslySetInnerHTML={{ __html: convertMarkdown(content) }}
         ></div>
       )}
-    </>
+    </div>
   );
 };

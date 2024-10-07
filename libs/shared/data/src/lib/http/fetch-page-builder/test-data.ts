@@ -61,6 +61,7 @@ export const TEST_RESPONSE = {
           componentType: 'LINK',
           href: 'http://123.com',
           label: 'click me!',
+          content: '<div><p>Hello world!!!</p></div>'
         },
       ],
       heading: 'Frequently asked questions',
