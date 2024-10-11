@@ -17,6 +17,13 @@ const COMPONENT_MAP: Record<
       })
     )
   ),
+  [PageBuilderComponentEnum.PAGE_HERO]: lazy(() =>
+    import('../../components/hero-container/hero-container').then(
+      ({ HeroContainer }) => ({
+        default: HeroContainer,
+      })
+    )
+  ),
   [PageBuilderComponentEnum.PAGE_SECTION]: lazy(() =>
     import('../../components/section-container/section-container').then(
       ({ SectionContainer }) => ({

@@ -57,7 +57,7 @@ const initialState: MainState = {
     prompts: [],
   },
   pageStatus: { state: FetchState.IDLE },
-  sidebarState: { left: true, right: false },
+  sidebarState: { left: false, right: false },
   userPrompt: undefined,
 };
 
@@ -214,6 +214,7 @@ export const MainProvider = ({
   let p = `
   As expert on Colorado state parks, create an article of no more that 500 words with a paragraph for each of the parks 'Mesa Verde', 
   'Great Sand Dunes' and the 'Rocky Mountain National Park' with the title 'Colorful Colorado State parks'. Style your response using Markdown
+  Update the page with a hero imageRef /images/co-state-parks.webp
   `;
   p = `
   Create a section with a Carousel, the title of the Carousel is "Image gallery of Colorado State Parks"\n. Add a Card with the image url 

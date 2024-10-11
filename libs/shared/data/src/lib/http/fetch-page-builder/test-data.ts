@@ -80,4 +80,9 @@ export const TEST_RESPONSE = {
     id: 'content_001',
   },
   url: 'Colorful-Colorado-State-parks',
+  hero: { 
+    componentType: 'PAGE_HERO',
+    imageRef: '/images/co-state-parks.webp',
+    id: 'colorful-colorado-state-parks',
+  }
 };

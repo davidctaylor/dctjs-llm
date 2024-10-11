@@ -5,7 +5,7 @@ creaye requests may uses synonyms the following are some examples:
 - Add Page
 - Create Article 
 
-If asked to create an article or content it should be add to the pageContent element of the page. If provided,
+If asked to create an article or content it should be add to the PAGE_CONTENT element of the page. If provided,
 content should not be formatted;
 
 If a page URL is not provided ALWAYS use the page Title in the following format <page-title-element>;

@@ -3,6 +3,7 @@ import { z } from 'zod';
 export enum PageBuilderComponentEnum {
   PAGE_CONTAINER = 'PAGE_CONTAINER',
   PAGE_CONTENT = 'PAGE_CONTENT',
+  PAGE_HERO = 'PAGE_HERO',
   PAGE_SECTION = 'PAGE_SECTION',
   PAGE_TITLE = 'PAGE_TITLE',
 }
@@ -67,28 +68,41 @@ export const CarouselComponentSchema = BaseComponentSchema.extend({
     ),
 }).describe('CAROUSEL component');
 
-export const PageBuilderSectionsSchema = z.object({
-  componentType: PageBuilderComponentEnumInternal,
-  components: z
-    .array(
-      z.union([
-        AccordionComponentSchema,
-        CardComponentSchema,
-        CarouselComponentSchema,
-        LinkComponentSchema,
-      ])
-    )
-    .describe('Array of ACCORDION, CARD, CAROUSEL or LINK components'),
-  content: z.union([z.string(), z.undefined()]),
-  heading: z.union([z.string(), z.undefined()]),
-  id: z.string().describe('Identifier for the page section object'),
-}).describe('PAGE_SECTION component');
+export const PageBuilderSectionsSchema = z
+  .object({
+    componentType: PageBuilderComponentEnumInternal,
+    components: z
+      .array(
+        z.union([
+          AccordionComponentSchema,
+          CardComponentSchema,
+          CarouselComponentSchema,
+          LinkComponentSchema,
+        ])
+      )
+      .describe('Array of ACCORDION, CARD, CAROUSEL or LINK components'),
+    content: z.union([z.string(), z.undefined()]),
+    heading: z.union([z.string(), z.undefined()]),
+    id: z.string().describe('Identifier for the page section object'),
+  })
+  .describe('PAGE_SECTION component');
 
 export const PageBuilderSchema = z
   .object({
     // title: z.string().describe('Title of page or article')})
     componentType: PageBuilderComponentEnumInternal,
     id: z.string().describe('Identifier for the page object'),
+    hero: z.union([
+      z.undefined(),
+      z
+        .object({
+          componentType: z.literal('PAGE_HERO'),
+          imageRef: z
+            .union([z.string(), z.undefined()])
+            .describe('Image URL for the HERO'),
+        })
+        .describe('PAGE_HERO component'),
+    ]),
     title: z.union([
       z.undefined(),
       z
@@ -103,9 +117,7 @@ export const PageBuilderSchema = z
             .optional(),
           id: z.string(),
         })
-        .describe(
-          'PAGE_TITLE component'
-        ),
+        .describe('PAGE_TITLE component'),
     ]),
     pageContent: z
       .object({
@@ -132,10 +144,12 @@ export const PageBuilderRequestSchema = z.object({
   page: z.union([PageBuilderSchema, z.undefined()]),
 });
 
-export const PageBuilderSectionsRequestSchema = z.object({
-  prompts: z.array(z.union([z.string(), z.undefined()])),
-  components: z.array(PageBuilderSectionsSchema),
-}).describe('PAGE_SECTION_REQUEST');
+export const PageBuilderSectionsRequestSchema = z
+  .object({
+    prompts: z.array(z.union([z.string(), z.undefined()])),
+    components: z.array(PageBuilderSectionsSchema),
+  })
+  .describe('PAGE_SECTION_REQUEST');
 
 export type PageBuilderType = z.infer<typeof PageBuilderSchema>;
 export type PageBuilderSectionsType = z.infer<typeof PageBuilderSectionsSchema>;

@@ -123,7 +123,6 @@ export const fetchPageBuilder = async (
 ): Promise<PageBuilderRequestType> => {
   const x = false;
   if (x) {
-
     return {
       ...pageData,
       prompts: [],
