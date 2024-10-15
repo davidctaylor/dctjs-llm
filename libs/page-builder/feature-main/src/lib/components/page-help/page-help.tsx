@@ -40,9 +40,14 @@ export const PageHelp = () => {
 
       <p className="bg-slate-50 rounded-lg p-4">
         Create a section with a Carousel, the title of the Carousel shall be
-        "Colorado State Parks Image gallery". Add four cards with the following
-        image urls\n "/images/mesa-verde.jpg", "/images/great-sand-dunes.jpg",
-        "/images/rockies.jpg", "/images/garden.jpg"
+        "Colorado State Parks Image gallery". Add a Card with the image url
+        "/images/mesa-verde.jpg" and the href
+        "https://www.nps.gov/meve/index.htm". Add a Card with the image url
+        "/images/great-sand-dunes.jpg" and the href
+        "https://www.nps.gov/grsa/index.htm". Add a Card with the image url
+        "/images/rockies.jpg" and the href
+        "https://www.rockymountainnationalpark.com/", Add a Card with the image
+        url "/images/garden.jpg" and the href "https://gardenofgods.com/"
       </p>
 
       <p>
@@ -52,9 +57,9 @@ export const PageHelp = () => {
       <p className="bg-slate-50 rounded-lg p-4">
         Create a new section with the heading "Frequently asked questions". As
         an expert on Colorado state parks generate three common questions and
-        answers for visitors to the Mesa Verde state park. Use these to create
-        Accordions with the question in the accordion 'heading' and the answer
-        in accordion content' Add a CTA with the label "click me!" and the href
+        answers for visitors to state parks. Use these to create Accordions with
+        the question in the accordion 'heading' and the answer in accordion
+        content' Add a CTA with the label "click me!" and the href
         "http://123.com"
       </p>
     </div>

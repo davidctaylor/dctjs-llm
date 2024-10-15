@@ -24,6 +24,7 @@
         object-fit: fill;
       }
     }
+    @apply text-lg;
   }
   
   dct-button.outlined {

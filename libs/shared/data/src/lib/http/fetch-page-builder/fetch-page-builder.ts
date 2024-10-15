@@ -40,7 +40,6 @@ const fetchIntentClassifications = async (
   console.log('XXX intentClassifications', intentClassifications);
   let invalid = false;
   intentClassifications.intents.forEach((entry) => {
-    console.log('XXX itent', entry);
     if (entry.intent === IntentClassificationEnum.INVALID) {
       pageData.prompts.push(`intent-classification:${entry.text}`);
       invalid = true;
@@ -143,7 +142,6 @@ export const fetchPageBuilder = async (
     pageData.prompts = [];
 
     for await (const intent of intentClassifications.intents) {
-      console.log('XXX request section:', intent);
       pageData = await fetchPageData(pageData, intent);
     }
 

@@ -26,6 +26,22 @@ export const TEST_RESPONSE = {
               componentType: 'CARD',
               imageRef: '/images/garden.jpg',
             },
+
+            {
+              id: 'section-3-carousel-1-card-3',
+              componentType: 'CARD',
+              imageRef: '/images/mesa-verde.jpg',
+            },
+            {
+              id: 'section-3-carousel-1-card-4',
+              componentType: 'CARD',
+              imageRef: '/images/great-sand-dunes.jpg',
+            },
+            {
+              id: 'section-3-carousel-1-card-4',
+              componentType: 'CARD',
+              imageRef: '/images/garden.jpg',
+            },
           ],
           title: 'Image gallery of Colorado State Parks',
         },
@@ -69,20 +85,14 @@ export const TEST_RESPONSE = {
     },
   ],
   title: {
-    componentType: 'PAGE_TITLE',
     title: 'Colorful Colorado State parks',
-    id: 'title_001',
   },
   pageContent: {
     content:
       '**Mesa Verde National Park**\n\nMesa Verde National Park is a testament to the Ancestral Puebloan culture, featuring some of the most notable and best-preserved cliff dwellings in the world. Designated as a UNESCO World Heritage Site, visitors to Mesa Verde are immersed in the history and culture of the people who lived there for over 700 years. Whether you opt for a guided tour of Cliff Palace or explore the Mesa Top Loop Road, each visit is a journey back in time.\n\n**Great Sand Dunes National Park**\n\nGreat Sand Dunes National Park and Preserve boasts the tallest dunes in North America, rising to over 750 feet. From hiking and sandboarding on the dunes to splashing in Medano Creek, this park offers unique activities set against a stunning natural backdrop. As the sun sets, the surrounding Sangre de Cristo Mountains create a dramatic skyline, making it a premier location for photography and stargazing.\n\n**Rocky Mountain National Park**\n\nRocky Mountain National Park is a majestic expanse of wilderness encompassing alpine lakes, rugged mountain peaks, and diverse ecosystems. Stretching over 415 square miles, the park is a haven for outdoor enthusiasts, offering opportunities for hiking, wildlife viewing, and camping. Trail Ridge Road, the highest continuous paved road in the U.S., provides breathtaking panoramic views, ensuring every visit is an unforgettable experience.',
-    componentType: 'PAGE_CONTENT',
-    id: 'content_001',
   },
   url: 'Colorful-Colorado-State-parks',
   hero: { 
-    componentType: 'PAGE_HERO',
     imageRef: '/images/co-state-parks.webp',
-    id: 'colorful-colorado-state-parks',
   }
 };
