@@ -25,6 +25,7 @@ export const TEST_RESPONSE = {
               id: 'section-3-carousel-1-card-2',
               componentType: 'CARD',
               imageRef: '/images/garden.jpg',
+              href: 'https://gardenofgods.com/',
             },
 
             {
