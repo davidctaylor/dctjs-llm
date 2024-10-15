@@ -9,7 +9,7 @@ export interface SidebarProps {
   children: React.ReactNode;
   isOpen: boolean;
   position: 'left' | 'right'
-  title: string;
+  title?: string;
   openEvent: () => void;
 }
 
@@ -25,7 +25,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   return (
     <div
       className={`border-r flex flex-col flex-1 overflow-hidden relative transition-all duration-200 sidebar  ${
-        isOpen ? 'w-full max-w-[400px]' : 'w-0 max-w-[0px]'
+        isOpen ? 'w-full max-w-[450px]' : 'w-0 max-w-[0px]'
       } ${position === 'right' ? 'border-l' : 'border-r'}`}
     >
       <div className="flex items-center px-6 pt-6">

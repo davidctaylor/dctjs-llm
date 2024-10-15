@@ -17,31 +17,10 @@ const COMPONENT_MAP: Record<
       })
     )
   ),
-  [PageBuilderComponentEnum.PAGE_HERO]: lazy(() =>
-    import('../../components/hero-container/hero-container').then(
-      ({ HeroContainer }) => ({
-        default: HeroContainer,
-      })
-    )
-  ),
   [PageBuilderComponentEnum.PAGE_SECTION]: lazy(() =>
     import('../../components/section-container/section-container').then(
       ({ SectionContainer }) => ({
         default: SectionContainer,
-      })
-    )
-  ),
-  [PageBuilderComponentEnum.PAGE_TITLE]: lazy(() =>
-    import('../../components/page-title/page-title').then(
-      ({ PageTitle }) => ({
-        default: PageTitle,
-      })
-    )
-  ),
-  [PageBuilderComponentEnum.PAGE_CONTENT]: lazy(() =>
-    import('../../components/content-container/content-container').then(
-      ({ ContentContainer }) => ({
-        default: ContentContainer,
       })
     )
   ),

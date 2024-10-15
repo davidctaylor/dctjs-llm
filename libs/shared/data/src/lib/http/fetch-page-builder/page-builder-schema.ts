@@ -2,10 +2,7 @@ import { z } from 'zod';
 
 export enum PageBuilderComponentEnum {
   PAGE_CONTAINER = 'PAGE_CONTAINER',
-  PAGE_CONTENT = 'PAGE_CONTENT',
-  PAGE_HERO = 'PAGE_HERO',
   PAGE_SECTION = 'PAGE_SECTION',
-  PAGE_TITLE = 'PAGE_TITLE',
 }
 
 export enum PageBuilderComponentSectionEnum {
@@ -89,25 +86,22 @@ export const PageBuilderSectionsSchema = z
 
 export const PageBuilderSchema = z
   .object({
+    componentType: z.literal('PAGE_CONTAINER'),
     // title: z.string().describe('Title of page or article')})
-    componentType: PageBuilderComponentEnumInternal,
-    id: z.string().describe('Identifier for the page object'),
     hero: z.union([
       z.undefined(),
       z
         .object({
-          componentType: z.literal('PAGE_HERO'),
           imageRef: z
             .union([z.string(), z.undefined()])
             .describe('Image URL for the HERO'),
         })
-        .describe('PAGE_HERO component'),
+        .describe('Page hero'),
     ]),
     title: z.union([
       z.undefined(),
       z
         .object({
-          componentType: z.literal('PAGE_TITLE'),
           title: z
             .union([z.string(), z.undefined()])
             .describe('Title of page or article'),
@@ -115,15 +109,12 @@ export const PageBuilderSchema = z
             .union([z.string(), z.undefined()])
             .describe('The SubTitle of page or article')
             .optional(),
-          id: z.string(),
         })
-        .describe('PAGE_TITLE component'),
+        .describe('Page title'),
     ]),
     pageContent: z
       .object({
         content: z.union([z.string(), z.undefined()]),
-        componentType: PageBuilderComponentEnumInternal,
-        id: z.string(),
       })
       .optional()
       .describe(

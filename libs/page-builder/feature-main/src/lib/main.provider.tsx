@@ -19,6 +19,7 @@ import {
 } from '@/shared-data';
 import { usePostMessage } from '@/shared-ui';
 import { usePageHighlight } from './hooks/page-highlight/usePageHighlight';
+import { title } from 'process';
 
 export enum MainActions {
   PAGE_CONTENT,
@@ -42,22 +43,28 @@ export interface UserPromptType {
 interface MainState {
   pageContent: PageBuilderRequestType;
   pageStatus: FetchResponse;
-  sidebarState: { left: boolean; right: boolean };
+  sidebarState: {
+    left: { open: boolean; mode: 'create' };
+    right: { open: boolean; mode: 'edit' | 'help' };
+  };
   userPrompt: UserPromptType | undefined;
 }
 
 const initialState: MainState = {
   pageContent: {
     page: {
-      componentType: PageBuilderComponentEnum.PAGE_CONTAINER,
-      id: 'default',
+      componentType: 'PAGE_CONTAINER',
+      pageContent: undefined,
       sections: [],
       title: undefined,
     },
     prompts: [],
   },
   pageStatus: { state: FetchState.IDLE },
-  sidebarState: { left: false, right: false },
+  sidebarState: {
+    left: { open: false, mode: 'create' },
+    right: { open: false, mode: 'help' },
+  },
   userPrompt: undefined,
 };
 
@@ -156,8 +163,11 @@ const useMainReducer = (state: MainState, action: MainAction) => {
       return {
         ...state,
         sidebarState: {
-          left: !state.sidebarState.left,
-          right: state.sidebarState.right,
+          left: {
+            open: !state.sidebarState.left.open,
+            mode: state.sidebarState.left.mode,
+          },
+          right: { ...state.sidebarState.right },
         },
       };
 
@@ -165,8 +175,11 @@ const useMainReducer = (state: MainState, action: MainAction) => {
       return {
         ...state,
         sidebarState: {
-          left: state.sidebarState.left,
-          right: !state.sidebarState.right,
+          left: { ...state.sidebarState.left },
+          right: {
+            open: !state.sidebarState.right.open,
+            mode: action.payload as 'edit' | 'help'
+          },
         },
       };
 
@@ -204,9 +217,12 @@ export const MainProvider = ({
 }) => {
   const { sendMessage } = usePostMessage('*', undefined, iframeRef);
 
-  usePostMessage('*', {mesgType: 'page-rendered', cb: (mesg: unknown) => {
-    setRefresh(Date.now());
-  }});
+  usePostMessage('*', {
+    mesgType: 'page-rendered',
+    cb: (mesg: unknown) => {
+      setRefresh(Date.now());
+    },
+  });
 
   const { setRefresh } = usePageHighlight(true, iframeRef, overlayRef);
   const userPromptRef = useRef<UserPromptType>();
@@ -217,13 +233,18 @@ export const MainProvider = ({
   Update the page with a hero imageRef /images/co-state-parks.webp
   `;
   p = `
-  Create a section with a Carousel, the title of the Carousel is "Image gallery of Colorado State Parks"\n. Add a Card with the image url 
+  Create a section with a Carousel, the title of the Carousel is "Colorado State Parks Image gallery"\n. Add a Card with the image url 
     "/images/default-image.png". Add an Card with the title "card-2". Create a section with the title "Display cards" add a card with the title "Display card"
   `;
 
   p = `
-  Create a section with a Carousel, the title of the Carousel is "Image gallery of Colorado State Parks"\n. Add a Card with the image url 
+  Create a section with a Carousel, the title of the Carousel is "Colorado State Parks Image gallery"\n. Add a Card with the image url 
     "/images/garden.jpg". Add an Card with the image url "/images/great-sand-dunes.jpg". Add an Card with the image url "/images/rockies.jpg"
+  `;
+
+  p = `
+  Create a section with a Carousel, the title of the Carousel is "Colorado State Parks Image gallery". Add four cards the the following image urls\n
+    "/images/mesa-verde.jpg", "/images/great-sand-dunes.jpg", "/images/rockies.jpg", "/images/garden.jpg"
   `;
 
   p = `
@@ -266,7 +287,7 @@ export const MainProvider = ({
           type: MainActions.PAGE_CONTENT,
           payload: response,
         });
-        
+
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
         ctx.dispatch({
